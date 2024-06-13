@@ -38,7 +38,7 @@ def create_app():
 
     from connectora.authAPI import authAPI
 
-    app.register_blueprint(authAPI, url_prefix = '/auth')
+    app.register_blueprint(authAPI, url_prefix = '/')
 
     return app
     
