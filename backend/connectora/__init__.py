@@ -4,7 +4,7 @@ from flask_cors import CORS
 import os
 from os import path
 from connectora.models import DB_NAME, db, ma, bcrypt
-from connectora.utils import API_KEY, API_SECRET, CLOUD_NAME
+from connectora.utils import API_KEY, API_SECRET, CLOUD_NAME, create_admin
 
 def create_app():
     app = Flask(__name__)
@@ -33,6 +33,10 @@ def create_app():
         if not path.exists('backend/instance/' + DB_NAME):
             db.create_all()
             print('created database')
+            try:
+                create_admin()
+            except Exception as e:
+                pass
 
     app.app_context().push()
 
