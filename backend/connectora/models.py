@@ -85,19 +85,15 @@ class Influencer(db.Model):
     followers = db.Column(db.Text, nullable = False, default = None)
     rates = db.Column(db.Text, nullable = False, default = None)
     platforms = db.Column(db.Text, nullable = False, default = None)
-    available_from = db.Column(db.Date)
-    available_to = db.Column(db.Date)
     ads = db.relationship("Ad", secondary = influencer_ads_association, back_populates = "influencers")
 
-    def __init__(self, user_id, category_id, socials, followers, rates, platforms, available_from, available_to):
+    def __init__(self, user_id, category_id, socials, followers, rates, platforms):
         self.user_id = user_id
         self.category_id = category_id
         self.socials = socials
         self.followers = followers
         self.rates = rates
         self.platforms = platforms
-        self.available_from = available_from
-        self.available_to = available_to
 
 class InfluencerSchema(ma.Schema):
     class Meta:
@@ -107,8 +103,7 @@ class InfluencerSchema(ma.Schema):
                   "followers",
                   "rates",
                   "platforms",
-                  "available_from",
-                  "available_to")
+                  )
                
 influencer_schema = InfluencerSchema()
 influencers_schema = InfluencerSchema(many = True)
