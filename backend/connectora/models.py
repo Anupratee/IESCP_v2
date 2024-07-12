@@ -13,8 +13,8 @@ class User(db.Model):
     __tablename__="users"
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
     email = db.Column(db.String(45), unique = True, nullable = False)
-    password = db.Column(db.Text, nullable=False)
-    name = db.Column(db.String(45), nullable=False)
+    password = db.Column(db.Text, nullable = False)
+    name = db.Column(db.String(45), nullable = False)
     role = db.Column(db.Text, nullable = False, default = None)
     image = db.Column(db.Text, nullable = False, default = "https://res.cloudinary.com/daxlzqjke/image/upload/v1707745689/cld-sample-2.jpg")
     description = db.Column(db.Text, nullable = False, default = None)
@@ -118,17 +118,14 @@ class Category(db.Model):
     __tablename__="categories"
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
     name = db.Column(db.String(45), nullable=False)
-    description = db.Column(db.Text, nullable = False, default = None)
 
-    def __init__(self, name, description=None):
+    def __init__(self, name):
         self.name = name
-        self.description = description
 
 class CategorySchema(ma.Schema):
     class Meta:
         fields = ("id", 
-                  "name",
-                  "description")
+                  "name")
 
 category_schema = CategorySchema()
 categories_schema = CategorySchema(many = True)

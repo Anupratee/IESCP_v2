@@ -4,7 +4,7 @@ from flask_cors import CORS
 import os
 from os import path
 from connectora.models import DB_NAME, db, ma, bcrypt
-from connectora.utils import API_KEY, API_SECRET, CLOUD_NAME, create_admin
+from connectora.utils import API_KEY, API_SECRET, CLOUD_NAME, create_admin, create_categories
 
 def create_app():
     app = Flask(__name__)
@@ -35,6 +35,7 @@ def create_app():
             print('created database')
             try:
                 create_admin()
+                create_categories()
             except Exception as e:
                 pass
 
