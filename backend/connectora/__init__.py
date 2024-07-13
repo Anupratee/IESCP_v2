@@ -42,8 +42,20 @@ def create_app():
     app.app_context().push()
 
     from connectora.authAPI import authAPI
+    from connectora.campaignsAPI import campaignsAPI
+    from connectora.usersAPI import usersAPI
+    from connectora.influencersAPI import influencersAPI
+    from connectora.sponsorsAPI import sponsorsAPI
+    from connectora.adsAPI import adsAPI
+    from connectora.categoriesAPI import categoriesAPI
 
     app.register_blueprint(authAPI, url_prefix = '/')
+    app.register_blueprint(campaignsAPI, url_prefix="/")
+    app.register_blueprint(usersAPI, url_prefix="/")
+    app.register_blueprint(influencersAPI, url_prefix="/")
+    app.register_blueprint(sponsorsAPI, url_prefix="/")
+    app.register_blueprint(adsAPI, url_prefix="/")
+    app.register_blueprint(categoriesAPI, url_prefix="/")
 
     return app
     
