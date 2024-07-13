@@ -15,6 +15,7 @@ def create_admin():
     image = ADMIN_IMAGE
     description = "admin"
     location = "India"
+    flag = False
 
     admin = User(email = email,
                  password = password,
@@ -22,7 +23,8 @@ def create_admin():
                  role = role,
                  image = image,
                  description = description,
-                 location = location)
+                 location = location,
+                 flag = flag)
     
     try:
         db.session.add(admin)
