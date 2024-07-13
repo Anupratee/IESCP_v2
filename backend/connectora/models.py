@@ -19,8 +19,9 @@ class User(db.Model):
     image = db.Column(db.Text, nullable = False, default = "https://res.cloudinary.com/daxlzqjke/image/upload/v1707745689/cld-sample-2.jpg")
     description = db.Column(db.Text, nullable = False, default = None)
     location = db.Column(db.Text, nullable = False, default = None)
+    flag = db.Column(db.Boolean, nullable = False, default = False)
 
-    def __init__(self, email, password, name, role, image, description, location):
+    def __init__(self, email, password, name, role, image, description, location, flag):
         self.email = email
         self.password = bcrypt.generate_password_hash(password).decode("utf-8")
         self.name = name
@@ -28,6 +29,7 @@ class User(db.Model):
         self.image = image
         self.description = description
         self.location = location
+        self.flag = flag
 
 class UserSchema(ma.Schema):
     class Meta:
@@ -38,7 +40,8 @@ class UserSchema(ma.Schema):
                   "role",
                   "image",
                   "description",
-                  "location")
+                  "location",
+                  "flag")
         
 user_schema = UserSchema()
 users_schema = UserSchema(many = True)
@@ -49,24 +52,19 @@ class Sponsor(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key = True)
     is_approved = db.Column(db.Boolean, nullable= False, default = False)
     industry = db.Column(db.Text, nullable = False, default = None)
-    contact_person = db.Column(db.String(45), nullable=False)
-    flag = db.Column(db.Boolean, nullable= False, default = False)
     campaigns = db.relationship("Campaign", back_populates = "sponsors")
 
-    def __init__(self, user_id, contact_person, industry, is_approved, flag):
+    def __init__(self, user_id, industry, is_approved):
         self.user_id = user_id
         self.is_approved = is_approved
         self.industry = industry
-        self.contact_person = contact_person
-        self.flag = flag
 
 class SponsorSchema(ma.Schema):
     class Meta:
         fields = ("user_id", 
                   "is_approved",
                   "industry",
-                  "contact_person",
-                  "flag",)
+                  )
         
 sponsor_schema = SponsorSchema()
 sponsors_schema = SponsorSchema(many = True)
