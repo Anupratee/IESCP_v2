@@ -38,12 +38,7 @@ def register_influencer():
                     location = location,
                     flag = flag)
     
-    try:
-        db.session.add(new_user)
-        db.session.commit()
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'error':f'{str(e)}.'}), 409
+    db.session.add(new_user)
     
     user = User.query.filter_by(email = email).first()
 
@@ -96,18 +91,16 @@ def register_sponsor():
                     location = location,
                     flag = flag)
     
-    try:
-        db.session.add(new_user)
-        db.session.commit()
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'error':f'{str(e)}.'}), 409
+    db.session.add(new_user)
     
     user = User.query.filter_by(email = email).first()
 
     user_id = user.id
     is_approved = False
     industry = data.get("industry")
+
+    if not industry:
+        return jsonify({'error':'Required fields can\'t be empty!'}), 400
 
     new_sponsor = Sponsor(user_id=user_id,
                           is_approved=is_approved,
