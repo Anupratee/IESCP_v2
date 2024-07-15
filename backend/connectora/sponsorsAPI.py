@@ -32,6 +32,36 @@ def get_all_unapproved_sponsors():
 
     return jsonify({'unapproved_sponsors':unapproved_sponsors_output}), 200
 
+
+#approve a sponsor
+@sponsorsAPI.route("/approve_sponsor/<int:user_id>", methods=["PUT"])
+@jwt_required()
+def approve_sponsor(user_id):
+    this_user = get_jwt_identity()
+    logged_in_user = User.query.get(this_user['id'])
+    if not logged_in_user.role == "admin":
+        return jsonify({'error':'Unauthorised access. You must be an admin to access this resource.'}), 403
+    
+    user = User.query.get(user_id)
+
+    if not user.role == "sponsor":
+        return jsonify({'error':'User is not a sponsor'}), 400
+    
+    sponsor = Sponsor.query.get(user_id)
+
+    if sponsor.is_approved == True:
+        return jsonify({'message':'Sponsor is already approved'}), 400
+    
+    try:
+        sponsor.is_approved = True
+        db.session.commit()
+        return jsonify({'message':'Sponsor approved successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error':f'{str(e)}.'}), 409
+    
+
+
 #view specific sponsor
 @sponsorsAPI.route("/sponsor/<int:user_id>", methods=["GET"])
 def get_sponsor_by_id(user_id):
