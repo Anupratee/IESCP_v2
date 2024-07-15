@@ -6,7 +6,7 @@ from connectora.models import db, User, user_schema, users_schema, Influencer, i
 from connectora.models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
 from connectora.utils import DEFAULT_INFLUENCER_IMAGE, API_KEY, API_SECRET, CLOUD_NAME
 
-influencersAPI = Blueprint("influencersAPI", __name__)
+influencersAPI = Blueprint("/influencersAPI", __name__)
 
 @influencersAPI.route("/influencers", methods = ['GET'])
 def get_all_influencers():
@@ -59,11 +59,8 @@ def update_influencer(user_id):
         update_category_id = update_category.id
         logged_in_influencer.category_id = update_category_id
     
-    if "update_name" in request.files:
-        if not update_name:
+    if not update_name:
             return jsonify({'error':'Required fields can\'t be empty!'}), 400
-        else:
-            logged_in_user.name = update_name
     
     image = None
     if "update_image" in request.files:
@@ -90,7 +87,7 @@ def update_influencer(user_id):
             image_url = uploaded_image['secure_url']
             logged_in_user.image = image_url
 
-
+    logged_in_user.name = update_name
     logged_in_user.description = update_description
     logged_in_user.location = update_location
 
@@ -106,7 +103,7 @@ def update_influencer(user_id):
         return jsonify({'error':f'{str(e)}.'}), 409
 
 
-@influencersAPI.route("delete_influencer/<int:user_id>", methods=["DELETE"])
+@influencersAPI.route("/delete_influencer/<int:user_id>", methods=["DELETE"])
 @jwt_required()
 def delete_influencer(user_id):
     this_user = get_jwt_identity()
