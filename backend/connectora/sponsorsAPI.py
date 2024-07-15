@@ -6,9 +6,10 @@ from connectora.models import db, User, user_schema, Influencer, influencers_sch
 from connectora.models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
 from connectora.utils import DEFAULT_INFLUENCER_IMAGE, DEFAULT_SPONSOR_IMAGE, API_KEY, API_SECRET, CLOUD_NAME
 
-
 sponsorsAPI = Blueprint("sponsorsAPI", __name__)
 
+
+#view all sponsors
 @sponsorsAPI.route("/sponsors", methods = ['GET'])
 def get_all_sponsors():
     sponsors = Sponsor.query.all()
@@ -17,6 +18,21 @@ def get_all_sponsors():
     return jsonify({"sponsors": sponsors_output}), 200
 
 
+#view unapproved sponsors
+@sponsorsAPI.route("/unapproved_sponsors", methods=["GET"])
+@jwt_required()
+def get_all_unapproved_sponsors():
+    this_user = get_jwt_identity()
+    logged_in_user = User.query.get(this_user['id'])
+    if not logged_in_user.role == "admin":
+        return jsonify({'error':'Unauthorised access. You must be an admin to access this resource.'}), 403
+    
+    unapproved_sponsors = Sponsor.query.filter_by(is_approved = False).all()
+    unapproved_sponsors_output = sponsors_schema.dump(unapproved_sponsors)
+
+    return jsonify({'unapproved_sponsors':unapproved_sponsors_output}), 200
+
+#view specific sponsor
 @sponsorsAPI.route("/sponsor/<int:user_id>", methods=["GET"])
 def get_sponsor_by_id(user_id):
     user = User.query.get(user_id)
@@ -34,6 +50,7 @@ def get_sponsor_by_id(user_id):
     return jsonify({"user":user_output},{"sponsor":sponsor_output}), 200
 
 
+#edit sponsor info
 @sponsorsAPI.route("/update_sponsor/<int:user_id>", methods=["PUT"])
 @jwt_required()
 def update_sponsor(user_id):
@@ -91,8 +108,9 @@ def update_sponsor(user_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error':f'{str(e)}.'}), 409
-    
 
+
+#delete a sponsor
 @sponsorsAPI.route("/delete_sponsor/<int:user_id>", methods=["DELETE"])
 @jwt_required()
 def delete_sponsor(user_id):
