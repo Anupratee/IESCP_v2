@@ -15,11 +15,11 @@ class User(db.Model):
     email = db.Column(db.String(45), unique = True, nullable = False)
     password = db.Column(db.Text, nullable = False)
     name = db.Column(db.String(45), nullable = False)
-    role = db.Column(db.Text, nullable = False, default = None)
+    role = db.Column(db.Text, nullable = False)
     image = db.Column(db.Text, nullable = False, default = "https://res.cloudinary.com/daxlzqjke/image/upload/v1707745689/cld-sample-2.jpg")
-    description = db.Column(db.Text, nullable = False, default = None)
-    location = db.Column(db.Text, nullable = False, default = None)
-    flag = db.Column(db.Boolean, nullable = False, default = False)
+    description = db.Column(db.Text)
+    location = db.Column(db.Text)
+    flag = db.Column(db.Boolean)
 
     def __init__(self, email, password, name, role, image, description, location, flag):
         self.email = email
@@ -79,27 +79,21 @@ class Influencer(db.Model):
     __tablename__="influencers"
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key = True)
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable = False)
-    socials = db.Column(db.Text, nullable = False, default = None)
-    followers = db.Column(db.Text, nullable = False, default = None)
-    rates = db.Column(db.Text, nullable = False, default = None)
-    platforms = db.Column(db.Text, nullable = False, default = None)
+    followers = db.Column(db.Text)
+    platforms = db.Column(db.Text)
     ads = db.relationship("Ad", secondary = influencer_ads_association, back_populates = "influencers")
 
-    def __init__(self, user_id, category_id, socials, followers, rates, platforms):
+    def __init__(self, user_id, category_id, followers, platforms):
         self.user_id = user_id
         self.category_id = category_id
-        self.socials = socials
         self.followers = followers
-        self.rates = rates
         self.platforms = platforms
 
 class InfluencerSchema(ma.Schema):
     class Meta:
         fields = ("user_id", 
                   "category_id",
-                  "socials",
                   "followers",
-                  "rates",
                   "platforms",
                   )
                

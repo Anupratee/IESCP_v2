@@ -49,16 +49,12 @@ def register_influencer():
 
     user_id = user.id
     category_id = 1
-    socials = ""
     followers = ""
-    rates = ""
     platforms = ""
 
     new_influencer = Influencer(user_id = user_id,
                                 category_id = category_id,
-                                socials = socials,
                                 followers = followers,
-                                rates = rates,
                                 platforms = platforms)
     
     try:
