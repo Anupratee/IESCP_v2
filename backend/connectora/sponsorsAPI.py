@@ -92,3 +92,42 @@ def update_sponsor(user_id):
         db.session.rollback()
         return jsonify({'error':f'{str(e)}.'}), 409
     
+
+@sponsorsAPI.route("/delete_sponsor/<int:user_id>", methods=["DELETE"])
+@jwt_required()
+def delete_sponsor(user_id):
+    this_user = get_jwt_identity()
+    logged_in_user = User.query.get(this_user['id'])
+
+    if user_id != logged_in_user.id:
+        if logged_in_user.role != "admin" or "influencer":
+            return jsonify({'error':'Unauthorised access. You can only delete your own profile.'}), 403 
+
+    user = User.query.get(user_id)
+    sponsor = Sponsor.query.get(user_id)
+
+    if not user:
+        return jsonify({"error":"Sponsor not found"}), 400
+    
+    try:
+        if user.image != DEFAULT_SPONSOR_IMAGE:
+            cloudinary_url_info = cloudinary_url(user.image)
+            if cloudinary_url_info:
+                cloudinary_public_id = cloudinary_url_info[0].split("/")[-1].split(".")[0]
+                cloudinary.uploader.destroy(cloudinary_public_id, 
+                                            invalidate=True, 
+                                            api_key = API_KEY, 
+                                            api_secret = API_SECRET, 
+                                            cloud_name = CLOUD_NAME)
+                
+        db.session.delete(sponsor)
+        db.session.delete(user)
+        db.session.commit()
+        return jsonify({'message':'Sponsor deleted successfully'}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error':f'{str(e)}.'}), 409
+
+
+    
