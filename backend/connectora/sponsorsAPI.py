@@ -59,7 +59,6 @@ def approve_sponsor(user_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error':f'{str(e)}.'}), 409
-    
 
 
 #view specific sponsor

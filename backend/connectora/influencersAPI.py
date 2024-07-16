@@ -54,7 +54,7 @@ def update_influencer(user_id):
     if update_category_name:
         update_category = Category.query.filter_by(name = update_category_name).first()
         if not update_category:
-            return jsonify({"error":"category doesn't exist"}), 400
+            return jsonify({"error":"Category doesn't exist"}), 400
     
         update_category_id = update_category.id
         logged_in_influencer.category_id = update_category_id
