@@ -4,6 +4,7 @@ API_SECRET = "uqVIryJIZB5gB9uBUm3Qhy4LJ1o"
 
 DEFAULT_SPONSOR_IMAGE = "https://asset.cloudinary.com/daxlzqjke/9701f4b015c6c77da93853c41637e490"
 DEFAULT_INFLUENCER_IMAGE = "https://asset.cloudinary.com/daxlzqjke/33367be5396809a2507a886857d18e46"
+DEFAULT_CAMPAIGN_IMAGE = "https://asset.cloudinary.com/daxlzqjke/4cc07a109b2b1acf74fe22350be04ea1"
 ADMIN_IMAGE = "https://asset.cloudinary.com/daxlzqjke/d42e0c19cc6bd13e7613da16521303df"
 
 def create_admin():
