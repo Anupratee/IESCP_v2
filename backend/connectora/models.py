@@ -125,23 +125,18 @@ class Campaign(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable = False)
     name = db.Column(db.String(45), nullable=False)
     description = db.Column(db.Text, nullable = False, default = None)
-    start_date = db.Column(db.Date, nullable = False, default = None)
-    end_date = db.Column(db.Date, nullable = False, default = None)
-    visibility = db.Column(db.Integer, nullable = False, default = 0) #0 is public, 1 is private
-    goals = db.Column(db.Text, nullable = False, default = None)
+    status = db.Column(db.Boolean) #0 is incomplete, 1 is completed
     image = db.Column(db.Text, nullable = False, default = None)
     sponsors = db.relationship("Sponsor", back_populates = "campaigns")
     ads = db.relationship("Ad", back_populates = "campaigns")
 
-    def __init__(self, sponsor_id, category_id, name, description, start_date, end_date, visibility, goals, image):
+    def __init__(self, sponsor_id, category_id, name, description, status, image):
         self.sponsor_id = sponsor_id
         self.category_id = category_id
         self.name = name
         self.description = description
-        self.start_date = start_date
-        self.end_date = end_date
-        self.visibility = visibility
-        self.goals = goals
+        self.status = status
+        self.status
         self.image = image
     
 class CampaignSchema(ma.Schema):
@@ -151,10 +146,7 @@ class CampaignSchema(ma.Schema):
                   "category_id",
                   "name",
                   "description",
-                  "start_date",
-                  "end_date",
-                  "visibility",
-                  "goals",
+                  "status"
                   "image")
         
 
