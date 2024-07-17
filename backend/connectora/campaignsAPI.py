@@ -82,3 +82,70 @@ def create_campaign():
 def update_campaign(campaign_id):
     this_user = get_jwt_identity()
     user = User.query.get(this_user["id"])
+
+    campaign = Campaign.query.get(campaign_id)
+
+    if not campaign:
+        return jsonify({'error':'Campaign doesn\'t exist'}), 404
+    
+    if campaign.sponsor_id != user.id:
+        return jsonify({'error':'Unauthorized. You can\'t update a campaign you don\'t own.'}), 403
+    
+    update_name = request.form.get("update_name")
+
+    update_category_name = request.form.get("update_category_name")
+    if not update_category_name:
+        category_id = 1
+    else:
+        category = Category.query.filter_by(name = update_category_name).first()
+        if not category:
+            return jsonify({"error":"Category doesn't exist"}), 400
+    
+        category_id = category.id
+
+    update_description = request.form.get("update_description")
+    update_status = request.form.get("update_status")
+
+    if update_status:
+        if update_status == "true" or update_status == "True":
+            update_status = True
+        else:
+            update_status = False
+
+    if not update_name:
+        return jsonify({'error':'Required fields can\'t be empty!'}), 400
+
+    image = None
+    if 'update_campaign_image' in request.files:
+        image = request.files['update_campaign_image']
+        if not image.filename.endswith(('.jpg', '.jpeg', '.png')):
+            return jsonify({'error':'Image must be an image file'}), 400
+
+    if image:
+        cloudinary_url_info = cloudinary_url(campaign.image)
+        if cloudinary_url_info:
+            cloudinary_public_id = cloudinary_url_info[0].split("/")[-1].split(".")[0]
+            if cloudinary_url_info != DEFAULT_CAMPAIGN_IMAGE:
+                cloudinary.uploader.destroy(cloudinary_public_id, 
+                                            invalidate=True,
+                                            api_key = API_KEY, 
+                                            api_secret = API_SECRET, 
+                                            cloud_name = CLOUD_NAME)
+                
+        uploaded_image = cloudinary.uploader.upload(image, api_key = API_KEY, 
+                                                    api_secret = API_SECRET, 
+                                                    cloud_name = CLOUD_NAME)
+        image_url = uploaded_image['secure_url']
+        campaign.image = image_url
+
+    campaign.name = update_name
+    campaign.category_id = category_id
+    campaign.description = update_description
+    campaign.status = update_status
+
+    try:
+        db.session.commit()
+        return jsonify({"message":"Campaign updated successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error':f'{str(e)}.'}), 409
