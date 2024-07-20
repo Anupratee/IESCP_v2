@@ -28,6 +28,11 @@ def create_campaign():
     
     sponsor_id = user.id
 
+    sponsor = Sponsor.query.get(sponsor_id)
+
+    if not sponsor.is_approved:
+        return jsonify({"error":"You need to be approved to create this resource"}), 403
+
     category_name = request.form.get("category_name")
     if not category_name:
         category_id = 1
@@ -77,7 +82,7 @@ def create_campaign():
         return jsonify({'error':f'{str(e)}.'}), 409
 
 
-@campaignsAPI.route("/update_campaign/<int:campaign_id>", methods=["POST"])
+@campaignsAPI.route("/update_campaign/<int:campaign_id>", methods=["PUT"])
 @jwt_required()
 def update_campaign(campaign_id):
     this_user = get_jwt_identity()
@@ -149,3 +154,8 @@ def update_campaign(campaign_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error':f'{str(e)}.'}), 409
+
+
+@campaignsAPI.route("/delete_campaign?<int:campaign_id>", methods=["DELETE"])
+def delete_campaign(campaign_id):
+    pass
