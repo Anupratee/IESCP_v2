@@ -160,18 +160,16 @@ class Ad(db.Model):
     campaign_id = db.Column(db.Integer, db.ForeignKey("campaigns.id"), nullable = False)
     name = db.Column(db.String(45), nullable=False)
     description = db.Column(db.Text, nullable = False, default = None)
-    requirements = db.Column(db.Text, nullable = False, default = None)
-    cost = db.Column(db.Integer, nullable = False, default = None)
+    budget = db.Column(db.Integer, nullable = False, default = None)
     status = db.Column(db.Boolean, nullable = False, default = False)
     campaigns = db.relationship("Campaign", back_populates = "ads")
     influencers = db.relationship("Influencer", secondary = influencer_ads_association, back_populates = "ads")
 
-    def __init__(self, campaign_id, name, description, requirements, cost, status):
+    def __init__(self, campaign_id, name, description, budget, status):
         self.campaign_id = campaign_id
         self.name = name
         self.description = description
-        self.requirements = requirements
-        self.cost = cost
+        self.budget = budget
         self.status = status
 
 class AdSchema(ma.Schema):
@@ -180,8 +178,7 @@ class AdSchema(ma.Schema):
                   "campaign_id",
                   "name",
                   "description",
-                  "requirements",
-                  "cost",
+                  "budget",
                   "status")
         
 
