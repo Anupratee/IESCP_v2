@@ -3,7 +3,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
 from datetime import datetime
-from connectora.models import db, User, user_schema, users_schema, Influencer, influencers_schema, bcrypt
+from connectora.models import db, User, user_schema, users_schema, Influencer, influencers_schema, bcrypt, Request, campaign_schema
 from connectora.models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
 from connectora.utils import DEFAULT_CAMPAIGN_IMAGE, API_KEY, API_SECRET, CLOUD_NAME
 
@@ -12,6 +12,26 @@ campaignsAPI = Blueprint("campaignsAPI", __name__)
 @campaignsAPI.route("/campaigns", methods = ['GET'])
 def get_all_campaigns():
     campaigns = Campaign.query.all()
+    campaigns_output = campaigns_schema.dump(campaigns)
+
+    return jsonify({"campaigns": campaigns_output}), 200
+
+
+@campaignsAPI.route("/campaign_by_id/<int:id>", methods=["GET"])
+def campaign_by_id(id):
+    campaign = Campaign.query.filter_by(id=id).first()
+    campaign_output = campaign_schema.dump(campaign)
+
+    return jsonify({"campaign":campaign_output}), 200
+
+
+@campaignsAPI.route("/campaigns_by_sponsor", methods=["GET"])
+@jwt_required()
+def get_campaigns_by_sponsor():
+    this_user = get_jwt_identity()
+    user = User.query.get(this_user["id"])
+    sponsor_id = user.id
+    campaigns = Campaign.query.filter_by(sponsor_id=sponsor_id).all()
     campaigns_output = campaigns_schema.dump(campaigns)
 
     return jsonify({"campaigns": campaigns_output}), 200
@@ -33,20 +53,11 @@ def create_campaign():
     if not sponsor.is_approved:
         return jsonify({"error":"You need to be approved to create this resource"}), 403
 
-    category_name = request.form.get("category_name")
-    if not category_name:
-        category_id = 1
-    else:
-        category = Category.query.filter_by(name = category_name).first()
-        if not category:
-            return jsonify({"error":"Category doesn't exist"}), 400
-    
-        category_id = category.id
-
+    category_id = request.form.get("category_id")
     name = request.form.get("name")
     description = request.form.get("description")
     status = False
-    
+    print(category_id, name, description)
     image = None
 
     if "image" in request.files:
@@ -96,20 +107,10 @@ def update_campaign(campaign_id):
     if campaign.sponsor_id != user.id:
         return jsonify({'error':'Unauthorized. You can\'t update a campaign you don\'t own.'}), 403
     
-    update_name = request.form.get("update_name")
-
-    update_category_name = request.form.get("update_category_name")
-    if not update_category_name:
-        category_id = 1
-    else:
-        category = Category.query.filter_by(name = update_category_name).first()
-        if not category:
-            return jsonify({"error":"Category doesn't exist"}), 400
-    
-        category_id = category.id
-
-    update_description = request.form.get("update_description")
-    update_status = request.form.get("update_status")
+    update_name = request.form.get("name")
+    category_id = request.form.get("category_id")
+    update_description = request.form.get("description")
+    update_status = request.form.get("status")
 
     if update_status:
         if update_status == "true" or update_status == "True":
@@ -156,6 +157,52 @@ def update_campaign(campaign_id):
         return jsonify({'error':f'{str(e)}.'}), 409
 
 
-@campaignsAPI.route("/delete_campaign?<int:campaign_id>", methods=["DELETE"])
+@campaignsAPI.route("/delete_campaign/<int:campaign_id>", methods=["DELETE"])
+@jwt_required()
 def delete_campaign(campaign_id):
-    pass
+    this_user = get_jwt_identity()
+    user = User.query.get(this_user["id"])
+
+    campaign = Campaign.query.get(campaign_id)
+
+    if campaign.sponsor_id != user.id:
+        return jsonify({'error':'Unauthorized. You can\'t delete a campaign you don\'t own.'}), 403
+
+    ads = Ad.query.filter_by(campaign_id=campaign_id)
+    for ad in ads:
+
+        if not ad:
+            return jsonify({'error':'Ad doesn\'t exist'}), 404
+    
+    
+        requests = Request.query.filter_by(ad_id=ad.id).all()
+
+        for influencer in ad.influencers:
+            ad.influencers.remove(influencer)
+
+        try:
+            for request in requests:
+                db.session.delete(request)
+            db.session.delete(ad)
+        except Exception as e:
+            db.session.rollback()
+
+
+    cloudinary_url_info = cloudinary_url(campaign.image)
+    if cloudinary_url_info:
+        cloudinary_public_id = cloudinary_url_info[0].split("/")[-1].split(".")[0]
+        if cloudinary_url_info != DEFAULT_CAMPAIGN_IMAGE:
+            cloudinary.uploader.destroy(cloudinary_public_id, 
+                                        invalidate=True,
+                                        api_key = API_KEY, 
+                                        api_secret = API_SECRET, 
+                                        cloud_name = CLOUD_NAME)
+
+    try:
+        db.session.delete(campaign)
+        db.session.commit()
+        return jsonify({"message":"Campaign deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error':f'{str(e)}.'}), 409
+        

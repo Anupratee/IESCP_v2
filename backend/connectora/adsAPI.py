@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
-from connectora.models import db, User, users_schema, Influencer, influencers_schema, bcrypt
+from connectora.models import db, User, users_schema, Influencer, influencers_schema, bcrypt, Request
 from connectora.models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
 from connectora.utils import DEFAULT_INFLUENCER_IMAGE, DEFAULT_SPONSOR_IMAGE
 
@@ -10,6 +10,14 @@ adsAPI = Blueprint("adsAPI", __name__)
 @adsAPI.route("/ads", methods = ['GET'])
 def get_all_ads():
     ads = Ad.query.all()
+    ads_output = ads_schema.dump(ads)
+
+    return jsonify({"ads": ads_output}), 200
+
+
+@adsAPI.route("/get_ads_by_campaign/<int:campaign_id>", methods=["GET"])
+def get_ads_by_campaign(campaign_id):
+    ads = Ad.query.filter_by(campaign_id=campaign_id).all()
     ads_output = ads_schema.dump(ads)
 
     return jsonify({"ads": ads_output}), 200
@@ -96,4 +104,36 @@ def update_ad(ad_id):
         db.session.rollback()
         return jsonify({'error':f'{str(e)}.'}), 409
 
+    
+@adsAPI.route("/delete_ad/<int:ad_id>", methods=["DELETE"])
+@jwt_required()
+def delete_ad(ad_id):
+    this_user = get_jwt_identity()
+    user = User.query.get(this_user["id"])
+
+    ad = Ad.query.get(ad_id)
+
+    if not ad:
+        return jsonify({'error':'Ad doesn\'t exist'}), 404
+    
+    campaign = Campaign.query.get(ad.campaign_id)
+
+    if campaign.sponsor_id != user.id:
+        return jsonify({'error':'Unauthorized. You can\'t delete an Ad you don\'t own.'}), 403
+    
+    requests = Request.query.filter_by(ad_id=ad_id).all()
+
+    for influencer in ad.influencers:
+            ad.influencers.remove(influencer)
+
+    try:
+        for request in requests:
+            db.session.delete(request)
+        db.session.delete(ad)
+        db.session.commit()
+        return jsonify({"message":"Ad deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error':f'{str(e)}.'}), 409
+        
     

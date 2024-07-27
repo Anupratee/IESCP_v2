@@ -48,6 +48,7 @@ def create_app():
     from connectora.sponsorsAPI import sponsorsAPI
     from connectora.adsAPI import adsAPI
     from connectora.categoriesAPI import categoriesAPI
+    from connectora.adrequestsAPI import adrequestsAPI
 
     app.register_blueprint(authAPI, url_prefix = '/')
     app.register_blueprint(campaignsAPI, url_prefix="/")
@@ -56,6 +57,7 @@ def create_app():
     app.register_blueprint(sponsorsAPI, url_prefix="/")
     app.register_blueprint(adsAPI, url_prefix="/")
     app.register_blueprint(categoriesAPI, url_prefix="/")
+    app.register_blueprint(adrequestsAPI, url_prefix="/")
 
     return app
     

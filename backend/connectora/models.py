@@ -72,7 +72,8 @@ sponsors_schema = SponsorSchema(many = True)
 
 influencer_ads_association = db.Table("influencer_ads_association",
                                       db.Column("influencer_id", db.Integer, db.ForeignKey("influencers.user_id")),
-                                      db.Column("ad_id", db.Integer, db.ForeignKey("ads.id")))
+                                      db.Column("ad_id", db.Integer, db.ForeignKey("ads.id")),
+                                      db.Column("payment_amount", db.Integer))
 
 
 class Influencer(db.Model):
@@ -112,7 +113,7 @@ class Category(db.Model):
 class CategorySchema(ma.Schema):
     class Meta:
         fields = ("id", 
-                  "name")
+                  "name",)
 
 category_schema = CategorySchema()
 categories_schema = CategorySchema(many = True)
@@ -146,7 +147,7 @@ class CampaignSchema(ma.Schema):
                   "category_id",
                   "name",
                   "description",
-                  "status"
+                  "status",
                   "image")
         
 
@@ -184,3 +185,33 @@ class AdSchema(ma.Schema):
 
 ad_schema = AdSchema()
 ads_schema = AdSchema(many = True)
+
+
+class Request(db.Model):
+    __tablename__="requests"
+    id = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    influencer_id = db.Column(db.Integer, db.ForeignKey("influencers.user_id"))
+    sponsor_id = db.Column(db.Integer, db.ForeignKey("sponsors.user_id"))
+    ad_id = db.Column(db.Integer, db.ForeignKey("ads.id"))
+    from_who = db.Column(db.Text, nullable = False)
+    payment_amount = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, influencer_id, sponsor_id, ad_id, from_who, payment_amount):
+        self.influencer_id = influencer_id
+        self.sponsor_id = sponsor_id
+        self.ad_id = ad_id
+        self.from_who = from_who
+        self.payment_amount = payment_amount
+
+class RequestSchema(ma.Schema):
+        class Meta:
+            fields = ("id",
+                      "influencer_id",
+                      "sponsor_id",
+                      "ad_id",
+                      "from_who",
+                      "payment_amount")   
+            
+request_schema = RequestSchema()
+requests_schema = RequestSchema(many=True)
+
