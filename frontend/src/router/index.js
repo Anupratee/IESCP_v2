@@ -3,7 +3,9 @@ import LoginPage from "../views/LoginPage.vue";
 import RegisterInfluencer from "../views/RegisterInfluencer.vue";
 import RegisterSponsor from "../views/RegisterSponsor.vue";
 import SponsorHome from "../views/SponsorHome.vue";
+import SponsorProfile from "../views/SponsorProfile.vue";
 import CampaignPage from "../views/CampaignPage.vue";
+import AdPage from "../views/AdPage.vue";
 
 const routes = [
   {
@@ -27,9 +29,19 @@ const routes = [
     component: SponsorHome,
   },
   {
+    path: "/sponsors/profile/:user_id",
+    name: "sponsor_profile",
+    component: SponsorProfile,
+  },
+  {
     path: "/sponsor-home/campaigns/:campaign_id",
     name: "campaign_home",
     component: CampaignPage,
+  },
+  {
+    path: "/sponsor-home/ads/:ad_id",
+    name: "ad_page",
+    component: AdPage,
   },
 ];
 

@@ -76,7 +76,7 @@ def get_sponsor_by_id(user_id):
     user_output = user_schema.dump(user)
     sponsor_output = sponsor_schema.dump(sponsor)
 
-    return jsonify({"user":user_output},{"sponsor":sponsor_output}), 200
+    return jsonify({"user":user_output, "sponsor":sponsor_output}), 200
 
 
 #edit sponsor info

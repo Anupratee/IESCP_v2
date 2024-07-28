@@ -1,10 +1,33 @@
 <template>
   <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <div v-if="isLoggedIn">
+      <div v-if="role === 'admin'">
+        <router-link to="/admin-home">Home</router-link>
+      </div>
+      <div v-if="role === 'sponsor'">
+        <router-link to="/sponsor-home">Home</router-link> |
+        <router-link :to="`/sponsors/profile/${this.id}`">Profile</router-link>
+      </div>
+      <div v-if="role === 'influencer'">
+        <router-link to="/influencer-home">Home</router-link>
+      </div>
+    </div>
   </nav>
   <router-view />
 </template>
+
+<script>
+import userMixin from "@/mixins/userMixin";
+
+export default {
+  mixins: [userMixin],
+  computed: {
+    isLoggedIn() {
+      return this.logged_in;
+    },
+  },
+};
+</script>
 
 <style>
 #app {
