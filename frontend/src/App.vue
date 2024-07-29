@@ -2,14 +2,17 @@
   <nav>
     <div v-if="isLoggedIn">
       <div v-if="role === 'admin'">
-        <router-link to="/admin-home">Home</router-link>
+        <router-link to="/admin-home">Home</router-link> |
+        <router-link to="/login" @click="logout">Logout</router-link> |
       </div>
       <div v-if="role === 'sponsor'">
         <router-link to="/sponsor-home">Home</router-link> |
         <router-link :to="`/sponsors/profile/${this.id}`">Profile</router-link>
+        | <router-link to="/login" @click="logout">Logout</router-link> |
       </div>
       <div v-if="role === 'influencer'">
-        <router-link to="/influencer-home">Home</router-link>
+        <router-link to="/influencer-home">Home</router-link> |
+        <router-link to="/login" @click="logout">Logout</router-link> |
       </div>
     </div>
   </nav>
@@ -24,6 +27,12 @@ export default {
   computed: {
     isLoggedIn() {
       return this.logged_in;
+    },
+    role() {
+      return this.role;
+    },
+    id() {
+      return this.id;
     },
   },
 };

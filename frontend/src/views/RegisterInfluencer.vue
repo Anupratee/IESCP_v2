@@ -1,6 +1,6 @@
 <template>
   <h2>Register Influencer</h2>
-  <div>
+  <div class="container">
     <form @submit.prevent="signup">
       <label for="email" class="form-label">Email</label>
       <input

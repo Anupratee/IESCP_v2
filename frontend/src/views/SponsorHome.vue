@@ -81,7 +81,11 @@
   <div class="container">
     <h2>Create Campaign</h2>
     <br />
-    <form @submit.prevent="createCampaign" class="create_campaign_form">
+    <form
+      @submit.prevent="createCampaign"
+      enctype="multipart/form-data"
+      class="create_campaign_form"
+    >
       <label for="campaign_name" class="form-label">Name of Campaign</label>
       <input
         type="text"

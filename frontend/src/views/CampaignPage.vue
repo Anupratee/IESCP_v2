@@ -111,6 +111,7 @@
     <br />
     <form
       @submit.prevent="updateCampaign"
+      enctype="multipart/form-data"
       class="update_campaign_form"
       id="update_campaign_form"
       name="update_campaign_form"
@@ -131,7 +132,7 @@
           <label for="currentCategory">Current Category</label>
           <input
             type="text"
-            id="update_campaign_name"
+            id="current_category"
             class="form-control"
             v-model="category_name"
             disabled

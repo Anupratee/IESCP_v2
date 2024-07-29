@@ -20,19 +20,16 @@ export default {
         return;
       }
       try {
-        this.user = await this.getUser(access_token);
-        this.id = this.user.id;
+        const user = await this.getUser(access_token);
+        if (!user) {
+          this.logged_in = false;
+          return;
+        }
+        this.user = user;
+        this.id = user.id;
         this.logged_in = true;
+        this.role = user.role;
         console.log("logged_in");
-        if (this.user.role == "admin") {
-          this.role = "admin";
-        }
-        if (this.user.role == "influencer") {
-          this.role = "influencer";
-        }
-        if (this.user.role == "sponsor") {
-          this.role = "sponsor";
-        }
       } catch (error) {
         console.error("error fetching user info", error);
         this.logged_in = false;
@@ -57,6 +54,8 @@ export default {
       localStorage.removeItem("access_token");
       this.$router.push("/");
       this.logged_in = false;
+      this.role = null;
+      this.id = null;
       console.log("logged_out");
     },
   },

@@ -6,6 +6,7 @@ import SponsorHome from "../views/SponsorHome.vue";
 import SponsorProfile from "../views/SponsorProfile.vue";
 import CampaignPage from "../views/CampaignPage.vue";
 import AdPage from "../views/AdPage.vue";
+import InfluencerHome from "../views/InfluencerHome.vue";
 
 const routes = [
   {
@@ -42,6 +43,11 @@ const routes = [
     path: "/sponsor-home/ads/:ad_id",
     name: "ad_page",
     component: AdPage,
+  },
+  {
+    path: "/influencer-home",
+    name: "influencer_home",
+    component: InfluencerHome,
   },
 ];
 
