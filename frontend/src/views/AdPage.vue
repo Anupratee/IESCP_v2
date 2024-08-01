@@ -2,48 +2,6 @@
   <div>
     <h2>{{ name }}</h2>
   </div>
-  <div>
-    <div v-if="hasrequests"><h3>All Requests</h3></div>
-    <table class="table table-hover" v-if="hasrequests">
-      <thead>
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">Name</th>
-          <th scope="col">Description</th>
-          <th scope="col">Budget</th>
-          <th scope="col">Status</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="ad in ads" :key="ad.id">
-          <td>{{ ad.id }}</td>
-          <td>{{ ad.name }}</td>
-          <td>{{ ad.description }}</td>
-          <td>{{ ad.budget }}</td>
-          <td>{{ ad.status }}</td>
-          <td>
-            <router-link
-              :to="`/sponsor-home/ads/${ad.id}`"
-              class="btn btn-primary"
-              >View</router-link
-            >
-            <button
-              class="btn btn-danger"
-              data-bs-toggle="modal"
-              data-bs-target="#confirmDeleteAd"
-              @click="
-                selected_ad_id = ad.id;
-                selected_ad_name = ad.name;
-              "
-            >
-              Delete
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
   <div class="container">
     <h2>Update Advertisement</h2>
     <br />

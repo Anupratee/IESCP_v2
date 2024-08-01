@@ -7,6 +7,12 @@ import SponsorProfile from "../views/SponsorProfile.vue";
 import CampaignPage from "../views/CampaignPage.vue";
 import AdPage from "../views/AdPage.vue";
 import InfluencerHome from "../views/InfluencerHome.vue";
+import InfluencerCampaign from "../views/InfluencerCampaign.vue";
+import InfluencerProfile from "@/views/InfluencerProfile.vue";
+import AdminHome from "../views/AdminHome.vue";
+import ApproveSponsors from "../views/ApproveSponsors.vue";
+import AdminCampaigns from "@/views/AdminCampaigns.vue";
+import AdminAds from "../views/AdminAds.vue";
 
 const routes = [
   {
@@ -48,6 +54,36 @@ const routes = [
     path: "/influencer-home",
     name: "influencer_home",
     component: InfluencerHome,
+  },
+  {
+    path: "/influencers/profile/:user_id",
+    name: "influencers_profile",
+    component: InfluencerProfile,
+  },
+  {
+    path: "/influencer-home/campaigns/:campaign_id",
+    name: "influencer-home_home",
+    component: InfluencerCampaign,
+  },
+  {
+    path: "/admin-home",
+    name: "admin_home",
+    component: AdminHome,
+  },
+  {
+    path: "/admin-home/approve-sponsors",
+    name: "approve-sponsors",
+    component: ApproveSponsors,
+  },
+  {
+    path: "/admin-home/campaigns",
+    name: "admin_campaigns",
+    component: AdminCampaigns,
+  },
+  {
+    path: "/admin-home/ads",
+    name: "admin_ads",
+    component: AdminAds,
   },
 ];
 

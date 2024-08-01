@@ -11,18 +11,38 @@ campaignsAPI = Blueprint("campaignsAPI", __name__)
 
 @campaignsAPI.route("/campaigns", methods = ['GET'])
 def get_all_campaigns():
-    campaigns = Campaign.query.all()
-    campaigns_output = campaigns_schema.dump(campaigns)
-
-    return jsonify({"campaigns": campaigns_output}), 200
+    campaigns = db.session.query(Campaign, Category, User).join(Category, Campaign.category_id == Category.id).join(Sponsor, Campaign.sponsor_id == Sponsor.user_id).join(User, Sponsor.user_id == User.id).all()
+    campaign_list = []
+    for campaign, category, user in campaigns:
+        campaign_data = {
+            'id': campaign.id,
+            'name': campaign.name,
+            'description': campaign.description,
+            'status': 'Completed' if campaign.status else 'Incomplete',
+            'image': campaign.image,
+            'sponsor_name': user.name,  
+            'category_name': category.name  
+        }
+        campaign_list.append(campaign_data)
+    return jsonify({'campaigns': campaign_list})
 
 
 @campaignsAPI.route("/campaign_by_id/<int:id>", methods=["GET"])
 def campaign_by_id(id):
-    campaign = Campaign.query.filter_by(id=id).first()
-    campaign_output = campaign_schema.dump(campaign)
-
-    return jsonify({"campaign":campaign_output}), 200
+    campaign = db.session.query(Campaign, Category, User).join(Category, Campaign.category_id == Category.id).join(Sponsor, Campaign.sponsor_id == Sponsor.user_id).join(User, Sponsor.user_id == User.id).filter(Campaign.id == id).first()
+    if campaign:
+        campaign_data, category, user = campaign
+        campaign_output = {
+            'id': campaign_data.id,
+            'name': campaign_data.name,
+            'description': campaign_data.description,
+            'status': 'Completed' if campaign_data.status else 'Incomplete',
+            'image': campaign_data.image,
+            'sponsor_name': user.name,
+            'category_name': category.name
+        }
+        return jsonify({"campaign": campaign_output}), 200
+    return jsonify({"error": "Campaign not found"}), 404
 
 
 @campaignsAPI.route("/campaigns_by_sponsor", methods=["GET"])
@@ -31,9 +51,21 @@ def get_campaigns_by_sponsor():
     this_user = get_jwt_identity()
     user = User.query.get(this_user["id"])
     sponsor_id = user.id
-    campaigns = Campaign.query.filter_by(sponsor_id=sponsor_id).all()
-    campaigns_output = campaigns_schema.dump(campaigns)
-
+    campaigns = db.session.query(Campaign, Category, User).join(Category, Campaign.category_id == Category.id).join(Sponsor, Campaign.sponsor_id == Sponsor.user_id).join(User, Sponsor.user_id == User.id).filter(Campaign.sponsor_id == sponsor_id).all()
+    
+    campaigns_output = []
+    for campaign_data, category, user in campaigns:
+        campaign_output = {
+            'id': campaign_data.id,
+            'name': campaign_data.name,
+            'description': campaign_data.description,
+            'status': 'Completed' if campaign_data.status else 'Incomplete',
+            'image': campaign_data.image,
+            'sponsor_name': user.name,
+            'category_name': category.name
+        }
+        campaigns_output.append(campaign_output)
+    
     return jsonify({"campaigns": campaigns_output}), 200
 
 

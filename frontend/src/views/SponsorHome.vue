@@ -16,10 +16,14 @@
             alt="campaign cover"
           />
           <div class="card-body d-flex flex-column">
-            <h5 class="card-title">{{ campaign.name }}</h5>
+            <h4 class="card-title">
+              <b>{{ campaign.name }}</b>
+            </h4>
             <p class="card-text flex-fill">
-              Status: {{ campaign.status }} <br />
-              Description: {{ campaign.description }} <br />
+              <b>Category:</b> {{ campaign.category_name }} <br />
+              <b>Status:</b> {{ campaign.status }} <br />
+              <b>Description:</b> {{ campaign.description }} <br />
+              <b>By:</b> {{ campaign.sponsor_name }} <br />
             </p>
             <router-link
               :to="`/sponsor-home/campaigns/${campaign.id}`"

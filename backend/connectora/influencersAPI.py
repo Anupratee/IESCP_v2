@@ -26,11 +26,22 @@ def get_influencer_by_id(user_id):
     if not user.role == "influencer":
         return jsonify({"error":"User isn't an influencer"}), 400
     
-    influencer = Influencer.query.get(user_id)
-    user_output = user_schema.dump(user)
-    influencer_output = influencer_schema.dump(influencer)
+    influencer = db.session.query(Influencer, Category).join(Category, Influencer.category_id == Category.id).filter(Influencer.user_id == user_id).first()
+    
+    if influencer:
+        influencer_data, category = influencer
+        user_output = user_schema.dump(user)
+        influencer_output = {
+            'user_id': influencer_data.user_id,
+            'category_id': influencer_data.category_id,
+            'followers': influencer_data.followers,
+            'platforms': influencer_data.platforms,
+            'category_name': category.name
+        }
+        return jsonify({"user": user_output, "influencer": influencer_output}), 200
 
-    return jsonify({"user":user_output},{"influencer":influencer_output}), 200
+    return jsonify({'error': 'Influencer not found.'}), 404
+
 
 
 @influencersAPI.route("/update_influencer/<int:user_id>", methods=["PUT"])
@@ -44,20 +55,15 @@ def update_influencer(user_id):
     if logged_in_user.role != "influencer":
         return jsonify({"error":"Bad request"}), 400
     
+    logged_in_influencer = Influencer.query.get(this_user["id"])
+    
     update_name = request.form.get("update_name")
     update_description = request.form.get("update_description")
     update_location = request.form.get("update_location")
     update_followers = request.form.get("update_followers")
     update_platforms = request.form.get("update_platforms")
-
-    update_category_name = request.form.get("update_category_name")
-    if update_category_name:
-        update_category = Category.query.filter_by(name = update_category_name).first()
-        if not update_category:
-            return jsonify({"error":"Category doesn't exist"}), 400
-    
-        update_category_id = update_category.id
-        logged_in_influencer.category_id = update_category_id
+    update_category_id = request.form.get("category_id")
+    logged_in_influencer.category_id = update_category_id
     
     if not update_name:
             return jsonify({'error':'Required fields can\'t be empty!'}), 400

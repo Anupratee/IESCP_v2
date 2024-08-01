@@ -18,19 +18,31 @@ def get_all_sponsors():
     return jsonify({"sponsors": sponsors_output}), 200
 
 
-#view unapproved sponsors
 @sponsorsAPI.route("/unapproved_sponsors", methods=["GET"])
 @jwt_required()
-def get_all_unapproved_sponsors():
+def get_unapproved_sponsors():
     this_user = get_jwt_identity()
     logged_in_user = User.query.get(this_user['id'])
     if not logged_in_user.role == "admin":
         return jsonify({'error':'Unauthorised access. You must be an admin to access this resource.'}), 403
-    
-    unapproved_sponsors = Sponsor.query.filter_by(is_approved = False).all()
-    unapproved_sponsors_output = sponsors_schema.dump(unapproved_sponsors)
+    unapproved_sponsors = db.session.query(Sponsor, User).join(User, Sponsor.user_id == User.id).filter(Sponsor.is_approved == False).all()
+    sponsors_output = [
+        {
+            'user_id': sponsor.user_id,
+            'is_approved': sponsor.is_approved,
+            'industry': sponsor.industry,
+            'email': user.email,
+            'name': user.name,
+            'role': user.role,
+            'image': user.image,
+            'description': user.description,
+            'location': user.location,
+            'flag': user.flag
+        }
+        for sponsor, user in unapproved_sponsors
+    ]
 
-    return jsonify({'unapproved_sponsors':unapproved_sponsors_output}), 200
+    return jsonify({"unapproved_sponsors": sponsors_output}), 200
 
 
 #approve a sponsor

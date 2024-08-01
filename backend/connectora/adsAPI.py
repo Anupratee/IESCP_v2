@@ -9,26 +9,63 @@ adsAPI = Blueprint("adsAPI", __name__)
 
 @adsAPI.route("/ads", methods = ['GET'])
 def get_all_ads():
-    ads = Ad.query.all()
-    ads_output = ads_schema.dump(ads)
-
-    return jsonify({"ads": ads_output}), 200
+    ads = db.session.query(Ad, Campaign, User).join(Campaign, Ad.campaign_id == Campaign.id).join(Sponsor, Campaign.sponsor_id == Sponsor.user_id).join(User, Sponsor.user_id == User.id).all()
+    
+    ad_list = []
+    for ad, campaign, user in ads:
+        ad_data = {
+            'id': ad.id,
+            'name': ad.name,
+            'description': ad.description,
+            'budget': ad.budget,
+            'status': 'Completed' if ad.status else 'Incomplete',
+            'campaign_name': campaign.name,
+            'sponsor_name': user.name  
+        }
+        ad_list.append(ad_data)
+        
+    return jsonify({'ads': ad_list})
 
 
 @adsAPI.route("/get_ads_by_campaign/<int:campaign_id>", methods=["GET"])
 def get_ads_by_campaign(campaign_id):
-    ads = Ad.query.filter_by(campaign_id=campaign_id).all()
-    ads_output = ads_schema.dump(ads)
-
+    ads = db.session.query(Ad, Campaign, User).join(Campaign, Ad.campaign_id == Campaign.id).join(Sponsor, Campaign.sponsor_id == Sponsor.user_id).join(User, Sponsor.user_id == User.id).filter(Ad.campaign_id == campaign_id).all()
+    
+    ads_output = []
+    for ad, campaign, user in ads:
+        ad_output = {
+            'id': ad.id,
+            'campaign_id': ad.campaign_id,
+            'name': ad.name,
+            'description': ad.description,
+            'budget': ad.budget,
+            'status': 'Completed' if ad.status else 'Incomplete',
+            'campaign_name': campaign.name,
+            'sponsor_name': user.name
+        }
+        ads_output.append(ad_output)
+    
     return jsonify({"ads": ads_output}), 200
 
 
 @adsAPI.route("/get_ad_by_id/<int:ad_id>", methods=["GET"])
 def get_ad_by_id(ad_id):
-    ad = Ad.query.get(ad_id)
-    ad_output = ad_schema.dump(ad)
-
-    return jsonify({"ad":ad_output}), 200
+    ad = db.session.query(Ad, Campaign, User).join(Campaign, Ad.campaign_id == Campaign.id).join(Sponsor, Campaign.sponsor_id == Sponsor.user_id).join(User, Sponsor.user_id == User.id).filter(Ad.id == ad_id).first()
+    
+    if ad:
+        ad_data, campaign, user = ad
+        ad_output = {
+            'id': ad_data.id,
+            'campaign_id': ad_data.campaign_id,
+            'name': ad_data.name,
+            'description': ad_data.description,
+            'budget': ad_data.budget,
+            'status': 'Completed' if ad_data.status else 'Incomplete',
+            'campaign_name': campaign.name,
+            'sponsor_name': user.name
+        }
+        return jsonify({"ad": ad_output}), 200
+    return jsonify({"error": "Ad not found"}), 404
 
 
 @adsAPI.route("/create_ad/<int:campaign_id>", methods=["POST"])

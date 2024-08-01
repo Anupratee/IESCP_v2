@@ -3,7 +3,7 @@
     <h2>{{ name }}</h2>
     <br />
   </div>
-  <div>
+  <div class="container">
     <div v-if="hasAds"><h3>All Ads</h3></div>
     <table class="table table-hover" v-if="hasAds">
       <thead>
@@ -243,8 +243,7 @@ export default {
         })
         .then((data) => {
           const campaignData = data.campaign;
-          this.category_id = campaignData.category_id;
-          this.fetchCategory();
+          this.category_name = campaignData.category_name;
           this.name = campaignData.name;
           this.update_campaign_name = campaignData.name;
           this.description = campaignData.description;
@@ -253,29 +252,6 @@ export default {
           this.image = campaignData.image;
           console.log(data);
           console.log(this.name);
-        })
-        .catch((error) => {
-          alert(error.message);
-        });
-    },
-    fetchCategory() {
-      fetch(`http://localhost:5000/category_by_id/${this.category_id}`, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("access_token"),
-        },
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          const categoryData = data.category;
-          this.category_name = categoryData.name;
-          console.log(data);
-          console.log(this.category_name);
         })
         .catch((error) => {
           alert(error.message);

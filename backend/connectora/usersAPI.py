@@ -13,7 +13,7 @@ def get_all_users():
     return jsonify({"users": users_output}), 200
 
 
-@usersAPI.route("get_user",  methods=["GET"])
+@usersAPI.route("/get_user",  methods=["GET"])
 @jwt_required()
 def get_user():
     this_user = get_jwt_identity()

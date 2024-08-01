@@ -30,6 +30,10 @@ def influencer_request(ad_id):
 
     if not payment_amount:
         return jsonify({"error":"Required fields can't be empty"}), 400
+    
+    existing_request = Request.query.filter_by(influencer_id=influencer_id, ad_id=ad_id).first()
+    if existing_request:
+        return jsonify({"error": "You have already sent a request for this ad"}), 400
 
     new_request = Request(influencer_id=influencer_id,
                           sponsor_id=sponsor_id,
