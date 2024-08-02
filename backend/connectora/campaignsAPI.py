@@ -24,7 +24,7 @@ def get_all_campaigns():
             'category_name': category.name  
         }
         campaign_list.append(campaign_data)
-    return jsonify({'campaigns': campaign_list})
+    return jsonify({'campaigns': campaign_list}) , 200
 
 
 @campaignsAPI.route("/campaign_by_id/<int:id>", methods=["GET"])

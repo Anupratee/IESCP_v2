@@ -134,6 +134,202 @@
       </div>
     </div>
   </div>
+  <br />
+  <div class="container">
+    <div v-if="hasRequests">
+      <h3>Your Requests</h3>
+    </div>
+    <table class="table table-hover" v-if="hasRequests">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Description</th>
+          <th scope="col">Payment Amount</th>
+          <th scope="col">Status</th>
+          <th scope="col">Campaign</th>
+          <th scope="col">Sponsor</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="request in requests" :key="request.id">
+          <td>{{ request.ad_name }}</td>
+          <td>{{ request.ad_description }}</td>
+          <td>{{ request.payment_amount }}</td>
+          <td>{{ request.ad_status }}</td>
+          <td>{{ request.campaign_name }}</td>
+          <td>{{ request.sponsor_name }}</td>
+          <td>
+            <button
+              class="btn btn-success me-2"
+              data-bs-toggle="modal"
+              data-bs-target="#acceptAdModal"
+              @click="
+                selected_request_id = request.id;
+                selected_ad_name = request.ad_name;
+                payment_amount = request.payment_amount;
+              "
+            >
+              Accept
+            </button>
+            <button
+              class="btn btn-primary me-2"
+              data-bs-toggle="modal"
+              data-bs-target="#negotiateAdModal"
+              @click="
+                selected_request_id = request.id;
+                selected_ad_name = request.ad_name;
+                payment_amount = request.payment_amount;
+              "
+            >
+              Negotiate
+            </button>
+            <button
+              class="btn btn-danger"
+              data-bs-toggle="modal"
+              data-bs-target="#declineAdModal"
+              @click="
+                selected_request_id = request.id;
+                selected_ad_name = request.ad_name;
+                payment_amount = request.payment_amount;
+              "
+            >
+              Decline
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div
+    class="modal fade"
+    id="acceptAdModal"
+    tabindex="-1"
+    aria-labelledby="acceptAdModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="acceptAdModalLabel">
+            Accept ad: {{ selected_ad_name }}
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to accept ad {{ selected_ad_name }} with payment
+          amount {{ payment_amount }}
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button type="button" class="btn btn-success" @click="acceptRequest">
+            Accept
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="modal fade"
+    id="negotiateAdModal"
+    tabindex="-1"
+    aria-labelledby="negotiateAdModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="negotiateAdModalLabel">
+            Negotiate ad: {{ selected_ad_name }}
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="negotiateAmount" class="form-label"
+              >New Payment Amount</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="negotiateAmount"
+              v-model="payment_amount"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click="negotiateRequest"
+          >
+            Negotiate
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="modal fade"
+    id="declineAdModal"
+    tabindex="-1"
+    aria-labelledby="declineAdModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="declineAdModalLabel">
+            Decline ad: {{ selected_ad_name }}
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to decline ad {{ selected_ad_name }}?
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button type="button" class="btn btn-danger" @click="declineRequest">
+            Decline
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -142,14 +338,17 @@ export default {
     return {
       campaigns: [],
       ads: [],
+      requests: [],
       selected_ad_id: null,
       selected_ad_name: "",
       payment_amount: null,
+      selected_request_id: null,
     };
   },
   created() {
     this.fetchCampaigns();
     this.fetchAds();
+    this.fetchRequests();
   },
   computed: {
     hasCampaigns() {
@@ -157,6 +356,9 @@ export default {
     },
     hasAds() {
       return this.ads.length > 0;
+    },
+    hasRequests() {
+      return this.requests.length > 0;
     },
   },
   methods: {
@@ -202,6 +404,26 @@ export default {
           console.error(error.message);
         });
     },
+    fetchRequests() {
+      fetch("http://localhost:5000/influencer_ad_requests", {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("access_token"),
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+        })
+        .then((data) => {
+          this.requests = data.requests;
+          console.log(data);
+        })
+        .catch((error) => {
+          console.error(error.message);
+        });
+    },
     requestAd() {
       const formData = new FormData();
       formData.append("payment_amount", this.payment_amount);
@@ -238,6 +460,40 @@ export default {
         .catch((error) => {
           alert(error.message);
           (this.selected_ad_id = null),
+            (this.selected_ad_name = ""),
+            (this.payment_amount = null),
+            this.$router.go();
+        });
+    },
+    acceptRequest() {
+      fetch(
+        `http://localhost:5000/accept_request/${this.selected_request_id}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("access_token"),
+          },
+        }
+      )
+        .then((response) => {
+          if (!response.ok) {
+            return response.json().then((data) => {
+              throw new Error(data.error);
+            });
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+          alert("Request accepted successfully!");
+          (this.selected_request_id = null),
+            (this.selected_ad_name = ""),
+            (this.payment_amount = null),
+            this.$router.go();
+        })
+        .catch((error) => {
+          alert(error.message);
+          (this.selected_request_id = null),
             (this.selected_ad_name = ""),
             (this.payment_amount = null),
             this.$router.go();

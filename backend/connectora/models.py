@@ -195,6 +195,9 @@ class Request(db.Model):
     ad_id = db.Column(db.Integer, db.ForeignKey("ads.id"))
     from_who = db.Column(db.Text, nullable = False)
     payment_amount = db.Column(db.Integer, nullable=False)
+    influencer = db.relationship("Influencer", backref="requests")
+    sponsor = db.relationship("Sponsor", backref="requests")
+    ad = db.relationship("Ad", backref="requests")
 
     def __init__(self, influencer_id, sponsor_id, ad_id, from_who, payment_amount):
         self.influencer_id = influencer_id

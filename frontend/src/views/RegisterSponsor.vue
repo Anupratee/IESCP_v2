@@ -86,7 +86,7 @@
   </div>
   <br />
   <div>
-    <p>Already have an account? <router-link to="/login">Login</router-link></p>
+    <p>Already have an account? <router-link to="/">Login</router-link></p>
     <p>
       Want to be an influencer?
       <router-link to="/register-influencer">Register</router-link>

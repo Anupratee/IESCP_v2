@@ -77,7 +77,7 @@
   </div>
   <br />
   <div>
-    <p>Already have an account? <router-link to="/login">Login</router-link></p>
+    <p>Already have an account? <router-link to="/">Login</router-link></p>
     <p>
       Want to be a sponsor?
       <router-link to="/register-sponsor">Register</router-link>
