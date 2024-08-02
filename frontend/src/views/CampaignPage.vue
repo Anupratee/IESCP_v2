@@ -1,8 +1,14 @@
 <template>
   <div>
-    <h2>{{ name }}</h2>
-    <br />
+    <h2>
+      <b>{{ name }}</b>
+    </h2>
+    <h5><b>Description: </b>{{ description }}</h5>
+    <h5><b>Category: </b>{{ category_name }}</h5>
+    <h5><b>Status: </b>{{ status }}</h5>
   </div>
+  <br />
+  <br />
   <div class="container">
     <div v-if="hasAds"><h3>All Ads</h3></div>
     <table class="table table-hover" v-if="hasAds">
@@ -78,9 +84,10 @@
       </div>
     </div>
   </div>
-  <div></div>
+  <br />
+  <br />
   <div class="container">
-    <h2>Add Advertisement</h2>
+    <h3>Add Advertisement</h3>
     <br />
     <form @submit.prevent="createAd" class="create_ad_form">
       <label for="ad_name" class="form-label">Name of Advertisement</label>
@@ -106,8 +113,9 @@
     </form>
   </div>
   <br />
+  <br />
   <div class="container">
-    <h2>Update Campaign</h2>
+    <h3>Update Campaign</h3>
     <br />
     <form
       @submit.prevent="updateCampaign"
@@ -191,6 +199,7 @@
       <br />
     </form>
   </div>
+  <br />
 </template>
 
 <script>

@@ -69,6 +69,34 @@ def get_campaigns_by_sponsor():
     return jsonify({"campaigns": campaigns_output}), 200
 
 
+@campaignsAPI.route("/search_campaigns", methods=["GET"])
+def search_campaigns():
+    search_term = request.args.get('search_term', '')
+    category_id = request.args.get('category_id', None)
+
+    query = db.session.query(Campaign, Category, User).join(Category).join(Sponsor).join(User)
+
+    if search_term:
+        query = query.filter(Campaign.name.ilike(f'%{search_term}%'))
+
+    if category_id:
+        query = query.filter(Campaign.category_id == category_id)
+
+    campaigns_data = []
+    for campaign, category, sponsor_user in query:
+        campaign_data = {
+            'id': campaign.id,
+            'name': campaign.name,
+            'description': campaign.description,
+            'status': 'Completed' if campaign.status else 'Incomplete',
+            'image': campaign.image,
+            'category_name': category.name,
+            'sponsor_name': sponsor_user.name
+        }
+        campaigns_data.append(campaign_data)
+
+    return jsonify({'campaigns': campaigns_data}), 200
+
 @campaignsAPI.route("/create_campaign", methods=["POST"])
 @jwt_required()
 def create_campaign():

@@ -1,10 +1,13 @@
 <template>
   <div>
-    <h2>{{ campaign_name }}</h2>
-    <p><b>Description: </b>{{ campaign_description }}</p>
-    <p><b>Category: </b>{{ category_name }}</p>
-    <p><b>Status: </b>{{ campaign_status }}</p>
+    <h2>
+      <b>{{ campaign_name }}</b>
+    </h2>
+    <h5><b>Description: </b>{{ campaign_description }}</h5>
+    <h5><b>Category: </b>{{ category_name }}</h5>
+    <h5><b>Status: </b>{{ campaign_status }}</h5>
   </div>
+  <br />
   <br />
   <div class="container">
     <div v-if="hasAds">

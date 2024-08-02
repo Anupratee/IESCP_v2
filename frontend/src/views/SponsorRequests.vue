@@ -1,247 +1,96 @@
 <template>
   <div>
-    <h2><b>Influencer Home</b></h2>
-  </div>
-  <br />
-  <div v-if="hasCampaigns">
-    <h3>All Campaigns</h3>
+    <h2><b>My Requests</b></h2>
   </div>
   <br />
   <div class="container">
     <div class="row justify-content-center mb-3">
-      <div
-        class="col-md-4 mb-3"
-        v-for="campaign in campaigns"
-        :key="campaign.id"
-      >
+      <div class="col-md-4 mb-3" v-for="request in requests" :key="request.id">
         <div class="card h-100">
           <img
-            :src="campaign.image"
+            :src="request.influencer_image"
             class="card-img-top"
-            alt="campaign cover"
+            alt="influencer_img"
           />
           <div class="card-body d-flex flex-column">
             <h4 class="card-title">
-              <b>{{ campaign.name }}</b>
+              <b>{{ request.influencer_name }}</b>
             </h4>
             <p class="card-text flex-fill">
-              <b>Category:</b> {{ campaign.category_name }} <br />
-              <b>Status:</b> {{ campaign.status }} <br />
-              <b>Description:</b> {{ campaign.description }} <br />
-              <b>By:</b> {{ campaign.sponsor_name }} <br />
+              <b>Ad Name:</b> {{ request.ad_name }} <br />
+              <b>Payment Amount:</b> {{ request.payment_amount }} <br />
+              <b>Status:</b> {{ request.ad_status }} <br />
+              <b>Campaign:</b> {{ request.campaign_name }} <br />
+              <b>Sponsor:</b> {{ request.sponsor_name }} <br />
             </p>
-            <router-link
-              :to="`/influencer-home/campaigns/${campaign.id}`"
-              class="btn btn-primary"
-              >View</router-link
+            <div
+              v-if="request.from_who === 'sponsor'"
+              class="d-flex justify-content-between"
             >
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <br />
-  <div class="container">
-    <div v-if="hasAds">
-      <h3>All Ads</h3>
-    </div>
-    <table class="table table-hover" v-if="hasAds">
-      <thead>
-        <tr>
-          <th scope="col">Name</th>
-          <th scope="col">Description</th>
-          <th scope="col">Budget</th>
-          <th scope="col">Status</th>
-          <th scope="col">Campaign</th>
-          <th scope="col">Sponsor</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="ad in ads" :key="ad.id">
-          <td>{{ ad.name }}</td>
-          <td>{{ ad.description }}</td>
-          <td>{{ ad.budget }}</td>
-          <td>{{ ad.status }}</td>
-          <td>{{ ad.campaign_name }}</td>
-          <td>{{ ad.sponsor_name }}</td>
-          <td>
-            <button
-              class="btn btn-primary"
-              data-bs-toggle="modal"
-              data-bs-target="#requestAdModal"
-              @click="
-                selected_ad_id = ad.id;
-                selected_ad_name = ad.name;
-                payment_amount = ad.budget;
-              "
-            >
-              Request
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div
-    class="modal fade"
-    id="requestAdModal"
-    tabindex="-1"
-    aria-labelledby="requestAdLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="requestAdLabel">
-            Request for ad: {{ selected_ad_name }}
-          </h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="close"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="payment_amount" class="form-label"
-              >Payment Amount</label
-            >
-            <input
-              type="number"
-              class="form-control"
-              id="payment_amount"
-              v-model="payment_amount"
-            />
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Cancel
-          </button>
-          <button
-            @click="requestAd(selected_ad_id, payment_amount)"
-            class="btn btn-success"
-          >
-            Send
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <br />
-  <div class="container">
-    <div v-if="hasRequests">
-      <h3>Your Requests</h3>
-    </div>
-    <table class="table table-hover" v-if="hasRequests">
-      <thead>
-        <tr>
-          <th scope="col">Name</th>
-          <th scope="col">Description</th>
-          <th scope="col">Payment Amount</th>
-          <th scope="col">Status</th>
-          <th scope="col">Campaign</th>
-          <th scope="col">Sponsor</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="request in requests" :key="request.id">
-          <td>{{ request.ad_name }}</td>
-          <td>{{ request.ad_description }}</td>
-          <td>{{ request.payment_amount }}</td>
-          <td>{{ request.ad_status }}</td>
-          <td>{{ request.campaign_name }}</td>
-          <td>{{ request.sponsor_name }}</td>
-          <td>
-            <div v-if="request.from_who === 'sponsor'">
               <button
                 class="btn btn-success me-2"
                 data-bs-toggle="modal"
-                data-bs-target="#acceptAdModal"
-                @click="
-                  selected_request_id = request.id;
-                  selected_ad_name = request.ad_name;
-                  payment_amount = request.payment_amount;
-                "
+                data-bs-target="#acceptModal"
+                @click="setSelectedRequest(request)"
               >
                 Accept
               </button>
               <button
                 class="btn btn-primary me-2"
                 data-bs-toggle="modal"
-                data-bs-target="#negotiateAdModal"
-                @click="
-                  selected_request_id = request.id;
-                  selected_ad_name = request.ad_name;
-                  payment_amount = request.payment_amount;
-                "
+                data-bs-target="#negotiateModal"
+                @click="setSelectedRequest(request)"
               >
                 Negotiate
               </button>
               <button
                 class="btn btn-danger"
                 data-bs-toggle="modal"
-                data-bs-target="#declineAdModal"
-                @click="
-                  selected_request_id = request.id;
-                  selected_ad_name = request.ad_name;
-                  payment_amount = request.payment_amount;
-                "
+                data-bs-target="#declineModal"
+                @click="setSelectedRequest(request)"
               >
                 Decline
               </button>
             </div>
-            <div v-else-if="request.from_who === 'influencer'">
+            <div
+              v-else-if="request.from_who === 'influencer'"
+              class="d-flex justify-content-between"
+            >
               <button
                 class="btn btn-warning me-2"
                 data-bs-toggle="modal"
-                data-bs-target="#editAdModal"
-                @click="
-                  selected_request_id = request.id;
-                  selected_ad_name = request.ad_name;
-                  payment_amount = request.payment_amount;
-                "
+                data-bs-target="#editModal"
+                @click="setSelectedRequest(request)"
               >
                 Edit
               </button>
               <button
                 class="btn btn-danger"
                 data-bs-toggle="modal"
-                data-bs-target="#retractAdModal"
-                @click="
-                  selected_request_id = request.id;
-                  selected_ad_name = request.ad_name;
-                  payment_amount = request.payment_amount;
-                "
+                data-bs-target="#retractModal"
+                @click="setSelectedRequest(request)"
               >
                 Retract
               </button>
             </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <!-- Accept Modal -->
   <div
     class="modal fade"
-    id="acceptAdModal"
+    id="acceptModal"
     tabindex="-1"
-    aria-labelledby="acceptAdModalLabel"
+    aria-labelledby="acceptModalLabel"
     aria-hidden="true"
   >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="acceptAdModalLabel">
-            Accept ad: {{ selected_ad_name }}
-          </h5>
+          <h5 class="modal-title" id="acceptModalLabel">Accept Request</h5>
           <button
             type="button"
             class="btn-close"
@@ -250,8 +99,9 @@
           ></button>
         </div>
         <div class="modal-body">
-          Are you sure you want to accept ad {{ selected_ad_name }} with payment
-          amount {{ payment_amount }}
+          Are you sure you want to accept this request for
+          <b>{{ selectedRequest.ad_name }}</b
+          >?
         </div>
         <div class="modal-footer">
           <button
@@ -261,25 +111,27 @@
           >
             Close
           </button>
-          <button type="button" class="btn btn-success" @click="acceptRequest">
+          <button type="button" class="btn btn-success" @click="handleAccept">
             Accept
           </button>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Negotiate Modal -->
   <div
     class="modal fade"
-    id="negotiateAdModal"
+    id="negotiateModal"
     tabindex="-1"
-    aria-labelledby="negotiateAdModalLabel"
+    aria-labelledby="negotiateModalLabel"
     aria-hidden="true"
   >
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="negotiateAdModalLabel">
-            Negotiate ad: {{ selected_ad_name }}
+          <h5 class="modal-title" id="negotiateModalLabel">
+            Negotiate Request
           </h5>
           <button
             type="button"
@@ -289,17 +141,13 @@
           ></button>
         </div>
         <div class="modal-body">
-          <div class="mb-3">
-            <label for="negotiateAmount" class="form-label"
-              >New Payment Amount</label
-            >
-            <input
-              type="number"
-              class="form-control"
-              id="negotiateAmount"
-              v-model="payment_amount"
-            />
-          </div>
+          <label for="newAmount" class="form-label">New Payment Amount:</label>
+          <input
+            type="number"
+            class="form-control"
+            id="newAmount"
+            v-model="selectedRequest.payment_amount"
+          />
         </div>
         <div class="modal-footer">
           <button
@@ -309,26 +157,30 @@
           >
             Close
           </button>
-          <button type="button" class="btn btn-primary" @click="updateRequest">
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click="handleNegotiate"
+          >
             Negotiate
           </button>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Decline Modal -->
   <div
     class="modal fade"
-    id="declineAdModal"
+    id="declineModal"
     tabindex="-1"
-    aria-labelledby="declineAdModalLabel"
+    aria-labelledby="declineModalLabel"
     aria-hidden="true"
   >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="declineAdModalLabel">
-            Decline ad: {{ selected_ad_name }}
-          </h5>
+          <h5 class="modal-title" id="declineModalLabel">Decline Request</h5>
           <button
             type="button"
             class="btn-close"
@@ -337,7 +189,9 @@
           ></button>
         </div>
         <div class="modal-body">
-          Are you sure you want to decline ad {{ selected_ad_name }}?
+          Are you sure you want to decline this request for
+          <b>{{ selectedRequest.ad_name }}</b
+          >?
         </div>
         <div class="modal-footer">
           <button
@@ -347,74 +201,26 @@
           >
             Close
           </button>
-          <button type="button" class="btn btn-danger" @click="rejectRequest">
+          <button type="button" class="btn btn-danger" @click="handleDecline">
             Decline
           </button>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Edit Modal -->
   <div
     class="modal fade"
-    id="editAdModal"
+    id="editModal"
     tabindex="-1"
-    aria-labelledby="editAdModalLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="editAdModalLabel">
-            Edit ad: {{ selected_ad_name }}
-          </h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="editAmount" class="form-label"
-              >New Payment Amount</label
-            >
-            <input
-              type="number"
-              class="form-control"
-              id="editAmount"
-              v-model="payment_amount"
-            />
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Close
-          </button>
-          <button type="button" class="btn btn-warning" @click="updateRequest">
-            Save Changes
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div
-    class="modal fade"
-    id="retractAdModal"
-    tabindex="-1"
-    aria-labelledby="retractAdModalLabel"
+    aria-labelledby="editModalLabel"
     aria-hidden="true"
   >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="retractAdModalLabel">
-            Retract ad: {{ selected_ad_name }}
-          </h5>
+          <h5 class="modal-title" id="editModalLabel">Edit Request</h5>
           <button
             type="button"
             class="btn-close"
@@ -423,8 +229,15 @@
           ></button>
         </div>
         <div class="modal-body">
-          Are you sure you want to retract your request for ad
-          {{ selected_ad_name }}?
+          <label for="editAmount" class="form-label"
+            >Edit Payment Amount:</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            id="editAmount"
+            v-model="selectedRequest.payment_amount"
+          />
         </div>
         <div class="modal-footer">
           <button
@@ -434,14 +247,53 @@
           >
             Close
           </button>
-          <button type="button" class="btn btn-danger" @click="rejectRequest">
+          <button type="button" class="btn btn-warning" @click="handleEdit">
+            Edit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Retract Modal -->
+  <div
+    class="modal fade"
+    id="retractModal"
+    tabindex="-1"
+    aria-labelledby="retractModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="retractModalLabel">Retract Request</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to retract this request for
+          <b>{{ selectedRequest.ad_name }}</b
+          >?
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button type="button" class="btn btn-danger" @click="handleRetract">
             Retract
           </button>
         </div>
       </div>
     </div>
   </div>
-  <br />
 </template>
 
 <script>
@@ -458,17 +310,9 @@ export default {
     };
   },
   created() {
-    this.fetchCampaigns();
-    this.fetchAds();
     this.fetchRequests();
   },
   computed: {
-    hasCampaigns() {
-      return this.campaigns.length > 0;
-    },
-    hasAds() {
-      return this.ads.length > 0;
-    },
     hasRequests() {
       return this.requests.length > 0;
     },
@@ -517,7 +361,7 @@ export default {
         });
     },
     fetchRequests() {
-      fetch("http://localhost:5000/influencer_ad_requests", {
+      fetch("http://localhost:5000/sponsor_ad_requests", {
         method: "GET",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("access_token"),

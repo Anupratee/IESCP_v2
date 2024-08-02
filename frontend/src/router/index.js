@@ -4,11 +4,14 @@ import RegisterInfluencer from "../views/RegisterInfluencer.vue";
 import RegisterSponsor from "../views/RegisterSponsor.vue";
 import SponsorHome from "../views/SponsorHome.vue";
 import SponsorProfile from "../views/SponsorProfile.vue";
+import SponsorRequests from "../views/SponsorRequests.vue";
 import CampaignPage from "../views/CampaignPage.vue";
 import AdPage from "../views/AdPage.vue";
 import InfluencerHome from "../views/InfluencerHome.vue";
 import InfluencerCampaign from "../views/InfluencerCampaign.vue";
 import InfluencerProfile from "@/views/InfluencerProfile.vue";
+import InfluencerAds from "../views/InfluencerAds.vue";
+import SearchCampaigns from "../views/SearchCampaigns.vue";
 import AdminHome from "../views/AdminHome.vue";
 import ApproveSponsors from "../views/ApproveSponsors.vue";
 import AdminCampaigns from "@/views/AdminCampaigns.vue";
@@ -41,6 +44,11 @@ const routes = [
     component: SponsorProfile,
   },
   {
+    path: "/sponsor-home/requests",
+    name: "sponsor_requests",
+    component: SponsorRequests,
+  },
+  {
     path: "/sponsor-home/campaigns/:campaign_id",
     name: "campaign_home",
     component: CampaignPage,
@@ -54,6 +62,16 @@ const routes = [
     path: "/influencer-home",
     name: "influencer_home",
     component: InfluencerHome,
+  },
+  {
+    path: "/influencer-home/my-ads",
+    name: "influencer_ads",
+    component: InfluencerAds,
+  },
+  {
+    path: "/influencer-home/search",
+    name: "search",
+    component: SearchCampaigns,
   },
   {
     path: "/influencers/profile/:user_id",

@@ -1,6 +1,9 @@
 <template>
-  <div><h2>Sponsor Home</h2></div>
-  <div v-if="hasCampaigns"><h2>Your Campaigns</h2></div>
+  <div>
+    <h2><b>Sponsor Home</b></h2>
+  </div>
+  <br />
+  <div v-if="hasCampaigns"><h3>Your Campaigns</h3></div>
   <br />
   <div class="container">
     <div class="row justify-content-center mb-3">
@@ -30,6 +33,7 @@
               class="btn btn-primary"
               >View</router-link
             >
+            <br />
             <button
               class="btn btn-danger"
               data-bs-toggle="modal"
@@ -82,8 +86,9 @@
       </div>
     </div>
   </div>
+  <br />
   <div class="container">
-    <h2>Create Campaign</h2>
+    <h3>Create Campaign</h3>
     <br />
     <form
       @submit.prevent="createCampaign"
@@ -144,6 +149,7 @@
       <br />
     </form>
   </div>
+  <br />
 </template>
 
 <script>

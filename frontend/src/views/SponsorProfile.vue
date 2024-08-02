@@ -3,7 +3,11 @@
     <div class="profile-header">
       <img v-if="image" :src="image" alt="Profile Image" />
       <div v-else class="placeholder-image">No Image</div>
-      <h1>{{ name }}</h1>
+      <br />
+      <br />
+      <h1>
+        <b>{{ name }}</b>
+      </h1>
       <p>{{ role }}</p>
     </div>
     <div class="profile-details">
@@ -14,8 +18,10 @@
       <p><strong>Industry:</strong> {{ industry }}</p>
     </div>
   </div>
+  <br />
   <div class="container">
-    <h2>Update Profile</h2>
+    <h3>Update Profile</h3>
+    <br />
     <form @submit.prevent="updateProfile" enctype="multipart/form-data">
       <label for="update_name" class="form-label">Name</label>
       <input
@@ -103,6 +109,7 @@
       <button type="submit" class="btn btn-primary">Update Profile</button>
     </form>
   </div>
+  <br />
 </template>
 
 <script>

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
-from connectora.models import db, User, users_schema, Influencer, influencers_schema, bcrypt, Request, ad_schema
+from connectora.models import db, User, users_schema, Influencer, influencers_schema, bcrypt, Request, ad_schema, influencer_ads_association
 from connectora.models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
 from connectora.utils import DEFAULT_INFLUENCER_IMAGE, DEFAULT_SPONSOR_IMAGE
 
@@ -180,5 +180,44 @@ def delete_ad(ad_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error':f'{str(e)}.'}), 409
+    
+
+@adsAPI.route("/influencer_ads", methods=["GET"])
+@jwt_required()
+def get_influencer_ads():
+    this_user = get_jwt_identity()
+    user = User.query.get(this_user["id"])
+
+    if user.role != "influencer":
+        return jsonify({"error": "Unauthorized access"}), 401
+
+    influencer = Influencer.query.get(user.id)
+    if not influencer:
+        return jsonify({"error": "Influencer not found"}), 404
+
+    ads = db.session.query(Ad, Campaign, Sponsor, User).join(Campaign, Ad.campaign_id == Campaign.id)\
+                                                     .join(Sponsor, Campaign.sponsor_id == Sponsor.user_id)\
+                                                     .join(User, Sponsor.user_id == User.id)\
+                                                     .filter(Ad.id.in_(db.session.query(influencer_ads_association.c.ad_id)\
+                                                                         .filter(influencer_ads_association.c.influencer_id == user.id)))\
+                                                     .all()
+    
+    ad_list = []
+    for ad, campaign, sponsor, user in ads:
+        ad_data = {
+            'id': ad.id,
+            'name': ad.name,
+            'description': ad.description,
+            'budget': ad.budget,
+            'status': 'Completed' if ad.status else 'Incomplete',
+            'campaign_name': campaign.name,
+            'sponsor_name': user.name 
+        }
+        ad_list.append(ad_data)
+    
+    return jsonify({'ads': ad_list}), 200
+
+
+
         
     

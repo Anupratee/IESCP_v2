@@ -1,9 +1,16 @@
 <template>
   <div>
-    <h2>{{ name }}</h2>
+    <h2>
+      <b>{{ name }}</b>
+    </h2>
+    <h5><b>Description: </b>{{ description }}</h5>
+    <h5><b>Budget: </b>{{ budget }}</h5>
+    <h5><b>Status: </b>{{ status }}</h5>
   </div>
+  <br />
+  <br />
   <div class="container">
-    <h2>Update Advertisement</h2>
+    <h3>Update Advertisement</h3>
     <br />
     <form
       @submit.prevent="updateAd"
@@ -57,6 +64,7 @@
       <br />
     </form>
   </div>
+  <br />
 </template>
 
 <script>
