@@ -68,6 +68,31 @@ def get_ad_by_id(ad_id):
     return jsonify({"error": "Ad not found"}), 404
 
 
+@adsAPI.route("/get_ad_by_sponsor", methods=["GET"])
+@jwt_required()
+def get_ad_by_sponsor():
+    this_user = get_jwt_identity()
+    user = User.query.get(this_user["id"])
+
+    if user.role != "sponsor":
+        return jsonify({"error": "Unauthorized. Only sponsors can access this resource"}), 400
+    
+    sponsor = Sponsor.query.filter_by(user_id=user.id).first()
+
+    if not sponsor:
+        return jsonify({"error": "Sponsor profile not found"}), 404
+    
+    campaigns = Campaign.query.filter_by(sponsor_id=sponsor.user_id).all()
+    ads = []
+
+    for campaign in campaigns:
+        campaign_ads = Ad.query.filter_by(campaign_id=campaign.id).all()
+        ads.extend(campaign_ads)
+    
+    result = ads_schema.dump(ads)
+    return jsonify({"ads":result}), 200
+
+
 @adsAPI.route("/create_ad/<int:campaign_id>", methods=["POST"])
 @jwt_required()
 def create_ad(campaign_id):

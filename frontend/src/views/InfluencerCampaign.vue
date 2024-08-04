@@ -182,7 +182,7 @@ export default {
       for (let pair of Array.from(formData.entries())) {
         console.log(pair[0] + ", " + pair[1]);
       }
-      fetch(`http://localhost:5000/influencer_request/${this.selected_ad_id}`, {
+      fetch(`http://localhost:5000/create_request/${this.selected_ad_id}`, {
         method: "POST",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("access_token"),

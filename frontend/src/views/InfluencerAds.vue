@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h4>My Ads</h4>
+    <h3>My Ads</h3>
     <br />
     <div class="container">
       <table class="table table-hover" v-if="hasAds">

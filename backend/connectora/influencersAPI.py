@@ -42,6 +42,40 @@ def get_influencer_by_id(user_id):
 
     return jsonify({'error': 'Influencer not found.'}), 404
 
+@influencersAPI.route("/search_influencers", methods=["GET"])
+@jwt_required()
+def search_influencers():
+    search_term = request.args.get('search_term', '', type=str)
+    category_id = request.args.get('category_id', type=int)
+
+    query = db.session.query(Influencer, User, Category.name.label('category_name')).join(User, Influencer.user_id == User.id).join(Category, Influencer.category_id == Category.id)
+    if search_term:
+        query = query.filter(User.name.ilike(f'%{search_term}%'))
+
+    if category_id:
+        query = query.filter(Influencer.category_id == category_id)
+
+    results = query.all()
+
+    influencers = []
+    for influencer, user, category_name in results:
+        influencer_data = {
+            'id': influencer.user_id,
+            'name': user.name,
+            'email': user.email,
+            'image': user.image,
+            'description': user.description,
+            'location': user.location,
+            'flag': user.flag,
+            'followers': influencer.followers,
+            'platforms': influencer.platforms,
+            'category_id': influencer.category_id,
+            'category_name': category_name
+        }
+        influencers.append(influencer_data)
+
+    return jsonify({"influencers": influencers}), 200
+
 
 
 @influencersAPI.route("/update_influencer/<int:user_id>", methods=["PUT"])

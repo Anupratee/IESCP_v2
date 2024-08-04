@@ -4,7 +4,7 @@
       class="form-control"
       type="text"
       v-model="searchTerm"
-      placeholder="Enter search term"
+      placeholder="Enter campaign name"
     />
     <br />
     <div class="form-group">

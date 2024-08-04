@@ -104,18 +104,60 @@ def sponsor_ad_requests():
     return jsonify({"requests": request_list}), 200
 
 
+
+@adrequestsAPI.route("sponsor_create_request/<int:ad_id>/<int:influencer_id>", methods=["POST"])
+@jwt_required()
+def sponsor_create_request(ad_id, influencer_id):
+    this_user = get_jwt_identity()
+    user = User.query.get(this_user["id"])
+
+    if user.role != "sponsor":
+        return jsonify({"error":"You must be a sponsor to send this request"}), 400
+
+    from_who = "sponsor"
+    influencer_id = influencer_id
+    ad_id = ad_id
+    sponsor_id = user.id
+    payment_amount = request.form.get("payment_amount")
+
+    if not payment_amount:
+        return jsonify({"error":"Required fields can't be empty"}), 400
+    
+    existing_request = Request.query.filter_by(influencer_id=influencer_id, ad_id=ad_id).first()
+    if existing_request:
+        return jsonify({"error": "You have already sent this influencer a request for this ad"}), 400
+    
+    existing_association = db.session.query(influencer_ads_association).filter_by(influencer_id=influencer_id, ad_id=ad_id).first()
+    if existing_association:
+        return jsonify({"error": "Influencer already associated with this ad"}), 400
+
+    new_request = Request(influencer_id=influencer_id,
+                          sponsor_id=sponsor_id,
+                          ad_id=ad_id,
+                          from_who=from_who,
+                          payment_amount=payment_amount)
+    
+    try:
+        db.session.add(new_request)
+        db.session.commit()
+        return jsonify({"message":"Request created successfully"}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error':f'{str(e)}.'}), 409
+    
+
+
 @adrequestsAPI.route("/create_request/<int:ad_id>", methods=["POST"])
 @jwt_required()
 def create_request(ad_id):
     this_user = get_jwt_identity()
     user = User.query.get(this_user["id"])
 
-    if user.role == "influencer":
-        from_who = "influencer"
+    if user.role != "influencer":
+        return jsonify({"error":"You must be an influencer to send this request"}), 400
 
-    if user.role == "sponsor":
-        from_who = "sponsor"
-    
+    from_who = "influencer"
+
     influencer_id = user.id
     ad_id = ad_id
 

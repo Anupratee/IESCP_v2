@@ -5,6 +5,7 @@ import RegisterSponsor from "../views/RegisterSponsor.vue";
 import SponsorHome from "../views/SponsorHome.vue";
 import SponsorProfile from "../views/SponsorProfile.vue";
 import SponsorRequests from "../views/SponsorRequests.vue";
+import SearchInfluencers from "@/views/SearchInfluencers.vue";
 import CampaignPage from "../views/CampaignPage.vue";
 import AdPage from "../views/AdPage.vue";
 import InfluencerHome from "../views/InfluencerHome.vue";
@@ -49,6 +50,11 @@ const routes = [
     component: SponsorRequests,
   },
   {
+    path: "/sponsor-home/search",
+    name: "influencer_search",
+    component: SearchInfluencers,
+  },
+  {
     path: "/sponsor-home/campaigns/:campaign_id",
     name: "campaign_home",
     component: CampaignPage,
@@ -70,7 +76,7 @@ const routes = [
   },
   {
     path: "/influencer-home/search",
-    name: "search",
+    name: "campaign_search",
     component: SearchCampaigns,
   },
   {
