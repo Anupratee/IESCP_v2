@@ -1,31 +1,76 @@
 <template>
-  <div><h2>Admin Home</h2></div>
-  <br />
-  <div class="container my-4">
-    <div class="row">
-      <div class="col-md-4">
-        <div class="card text-white bg-primary mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Total Users</h5>
-            <p class="card-text" id="total-users">{{ total_users }}</p>
+  <div>
+    <h2>Admin Home</h2>
+    <br />
+    <div class="container my-4">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Total Users</h5>
+              <p class="card-text" id="total-users">{{ total_users }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Total Sponsors</h5>
+              <p class="card-text" id="total-campaigns">
+                {{ total_sponsors }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Total Influencers</h5>
+              <p class="card-text" id="total-ads">{{ total_influencers }}</p>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="card text-white bg-success mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Total Campaigns</h5>
-            <p class="card-text" id="total-campaigns">
-              {{ total_campaigns }}
-            </p>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Total Campaigns</h5>
+              <p class="card-text" id="total-users">{{ total_campaigns }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Total Ads</h5>
+              <p class="card-text" id="total-campaigns">
+                {{ total_ads }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Total Requests</h5>
+              <p class="card-text" id="total-ads">{{ total_requests }}</p>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="card text-white bg-danger mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Total Ads</h5>
-            <p class="card-text" id="total-ads">{{ total_ads }}</p>
+      <br />
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card mb-3">
+            <div class="card-body">
+              <h4 class="card-title">Sponsors and Influencers Distribution</h4>
+              <img
+                :src="chartUrl"
+                alt="Sponsors and Influencers Chart"
+                class="img-fluid"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -40,22 +85,19 @@ export default {
       campaigns: [],
       ads: [],
       total_users: null,
+      total_sponsors: null,
+      total_influencers: null,
       total_campaigns: null,
       total_ads: null,
+      total_requests: null,
+      chartUrl: "",
     };
   },
   created() {
     this.fetchCampaigns();
     this.fetchAds();
     this.fetchTotalStats();
-  },
-  computed: {
-    hasCampaigns() {
-      return this.campaigns.length > 0;
-    },
-    hasAds() {
-      return this.ads.length > 0;
-    },
+    this.fetchChart();
   },
   methods: {
     fetchCampaigns() {
@@ -70,13 +112,13 @@ export default {
           if (response.ok) {
             return response.json();
           }
+          throw new Error("Network response was not ok.");
         })
         .then((data) => {
           this.campaigns = data.campaigns;
-          console.log(data);
         })
         .catch((error) => {
-          console.error(error.message);
+          console.error("Error fetching campaigns:", error);
         });
     },
     fetchAds() {
@@ -91,13 +133,13 @@ export default {
           if (response.ok) {
             return response.json();
           }
+          throw new Error("Network response was not ok.");
         })
         .then((data) => {
           this.ads = data.ads;
-          console.log(data);
         })
         .catch((error) => {
-          console.error(error.message);
+          console.error("Error fetching ads:", error);
         });
     },
     fetchTotalStats() {
@@ -112,15 +154,36 @@ export default {
           if (response.ok) {
             return response.json();
           }
+          throw new Error("Network response was not ok.");
         })
         .then((data) => {
           this.total_users = data.total_users;
+          this.total_sponsors = data.total_sponsors;
+          this.total_influencers = data.total_influencers;
           this.total_campaigns = data.total_campaigns;
           this.total_ads = data.total_ads;
-          console.log(data);
+          this.total_requests = data.total_requests;
         })
         .catch((error) => {
-          console.error(error.message);
+          console.error("Error fetching total stats:", error);
+        });
+    },
+    fetchChart() {
+      fetch("http://localhost:5000/pie_chart/sponsors_influencers", {
+        responseType: "blob",
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.blob();
+          }
+          throw new Error("Network response was not ok.");
+        })
+        .then((blob) => {
+          const url = URL.createObjectURL(blob);
+          this.chartUrl = url;
+        })
+        .catch((error) => {
+          console.error("Error fetching chart:", error);
         });
     },
   },

@@ -24,7 +24,6 @@
     <button @click="searchInfluencers" class="btn btn-primary">Search</button>
     <br />
     <br />
-
     <div v-if="loading">Loading...</div>
     <div v-if="!loading && error">
       <p>{{ error }}</p>
@@ -79,60 +78,67 @@
         </div>
       </div>
     </div>
-  </div>
-  <div
-    class="modal fade"
-    id="requestAdModal"
-    tabindex="-1"
-    aria-labelledby="requestAdLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="requestAdLabel">
-            Request for ad: {{ selected_ad_name }}
-          </h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="close"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="payment_amount" class="form-label"
-              >Payment Amount</label
-            >
-            <input
-              type="number"
-              class="form-control"
-              id="payment_amount"
-              v-model="payment_amount"
-            />
+    <div
+      class="modal fade"
+      id="requestAdModal"
+      tabindex="-1"
+      aria-labelledby="requestAdLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="requestAdLabel">
+              Request for ad: {{ selected_influencer_name }}
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="close"
+            ></button>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Cancel
-          </button>
-          <button
-            @click="requestAd(selected_ad_id, payment_amount)"
-            class="btn btn-success"
-          >
-            Send
-          </button>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="adSelect" class="form-label">Select Ad</label>
+              <select
+                v-model="selected_ad_id"
+                class="form-control"
+                id="adSelect"
+              >
+                <option value="">Select an ad</option>
+                <option v-for="ad in ads" :key="ad.id" :value="ad.id">
+                  {{ ad.name }}
+                </option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="payment_amount" class="form-label"
+                >Payment Amount</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                id="payment_amount"
+                v-model="payment_amount"
+              />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button @click="requestAd" class="btn btn-success">Send</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-
 <script>
 export default {
   data() {
@@ -141,16 +147,28 @@ export default {
       selectedCategory: "",
       categories: [],
       influencers: [],
+      ads: [],
       loading: false,
       error: null,
       selected_influencer_id: null,
       selected_influencer_name: "",
-      ads: [],
+      selected_ad_id: null,
+      payment_amount: null,
     };
   },
   computed: {
     hasInfluencers() {
       return this.influencers.length > 0;
+    },
+  },
+  watch: {
+    selected_ad_id(newAdId) {
+      const selectedAd = this.ads.find((ad) => ad.id === newAdId);
+      if (selectedAd) {
+        this.payment_amount = selectedAd.budget;
+      } else {
+        this.payment_amount = null;
+      }
     },
   },
   async created() {
@@ -216,8 +234,74 @@ export default {
 
       this.loading = false;
     },
+    async fetchAds() {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/get_ad_by_sponsor",
+          {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("access_token"),
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch ads.");
+        }
+
+        const data = await response.json();
+        this.ads = data.ads;
+      } catch (error) {
+        this.error = "An error occurred while fetching ads.";
+      }
+    },
     searchInfluencers() {
       this.fetchInfluencers();
+    },
+    requestAd() {
+      const formData = new FormData();
+      formData.append("payment_amount", this.payment_amount);
+      for (let pair of Array.from(formData.entries())) {
+        console.log(pair[0] + ", " + pair[1]);
+      }
+      fetch(
+        `http://localhost:5000/sponsor_create_request/${this.selected_ad_id}/${this.selected_influencer_id}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("access_token"),
+          },
+          body: formData,
+        }
+      )
+        .then((response) => {
+          if (!response.ok) {
+            if (response.status === 400 || response.status === 409) {
+              return response.json().then((data) => {
+                throw new Error(data.error);
+              });
+            } else {
+              throw new Error("Error sending request");
+            }
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+          alert("Request sent successfully!");
+          this.selected_ad_id = null;
+          this.selected_ad_name = "";
+          this.payment_amount = null;
+          this.$router.go();
+        })
+        .catch((error) => {
+          alert(error.message);
+          this.selected_ad_id = null;
+          this.selected_ad_name = "";
+          this.payment_amount = null;
+          this.$router.go();
+        });
     },
   },
 };
