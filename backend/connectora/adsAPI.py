@@ -1,16 +1,15 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
-from connectora.models import db, User, users_schema, Influencer, influencers_schema, bcrypt, Request, ad_schema, influencer_ads_association
-from connectora.models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
-from connectora.utils import DEFAULT_INFLUENCER_IMAGE, DEFAULT_SPONSOR_IMAGE
-
+from models import db, User, users_schema, Influencer, influencers_schema, bcrypt, Request, ad_schema, influencer_ads_association
+from models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
+from utils import DEFAULT_INFLUENCER_IMAGE, DEFAULT_SPONSOR_IMAGE, cache
 
 adsAPI = Blueprint("adsAPI", __name__)
 
 @adsAPI.route("/ads", methods = ['GET'])
+@cache.cached(timeout=10)
 def get_all_ads():
-    ads = db.session.query(Ad, Campaign, User).join(Campaign, Ad.campaign_id == Campaign.id).join(Sponsor, Campaign.sponsor_id == Sponsor.user_id).join(User, Sponsor.user_id == User.id).all()
-    
+    ads = db.session.query(Ad, Campaign, User).join(Campaign, Ad.campaign_id == Campaign.id).join(Sponsor, Campaign.sponsor_id == Sponsor.user_id).join(User, Sponsor.user_id == User.id).all() 
     ad_list = []
     for ad, campaign, user in ads:
         ad_data = {

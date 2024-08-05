@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, send_file, Response
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
-from connectora.models import db, User, user_schema, users_schema, Influencer, influencers_schema, bcrypt, Request
-from connectora.models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
+from models import db, User, user_schema, users_schema, Influencer, influencers_schema, bcrypt, Request
+from models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
 import seaborn as sns
 import matplotlib
 matplotlib.use('Agg')

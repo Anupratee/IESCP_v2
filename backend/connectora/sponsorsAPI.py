@@ -2,9 +2,9 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
-from connectora.models import db, User, user_schema, Influencer, influencers_schema, bcrypt, sponsor_schema
-from connectora.models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
-from connectora.utils import DEFAULT_INFLUENCER_IMAGE, DEFAULT_SPONSOR_IMAGE, API_KEY, API_SECRET, CLOUD_NAME
+from models import db, User, user_schema, Influencer, influencers_schema, bcrypt, sponsor_schema
+from models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
+from utils import DEFAULT_INFLUENCER_IMAGE, DEFAULT_SPONSOR_IMAGE, API_KEY, API_SECRET, CLOUD_NAME
 
 sponsorsAPI = Blueprint("sponsorsAPI", __name__)
 

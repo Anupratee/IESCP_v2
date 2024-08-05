@@ -36,7 +36,7 @@ def create_admin():
         print("error:", e)
 
 def create_categories():
-    from connectora.models import db, Category
+    from models import db, Category
     new_categories = [
         Category(name = "General"),
         Category(name = "Fashion and Beauty"),
@@ -70,3 +70,8 @@ def create_categories():
 
 import warnings
 warnings.filterwarnings('ignore', category=UserWarning, module='numpy')
+
+
+
+from flask_caching import Cache
+cache = Cache()

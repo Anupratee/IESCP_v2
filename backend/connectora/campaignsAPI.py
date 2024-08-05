@@ -3,9 +3,9 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
 from datetime import datetime
-from connectora.models import db, User, user_schema, users_schema, Influencer, influencers_schema, bcrypt, Request, campaign_schema
-from connectora.models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
-from connectora.utils import DEFAULT_CAMPAIGN_IMAGE, API_KEY, API_SECRET, CLOUD_NAME
+from models import db, User, user_schema, users_schema, Influencer, influencers_schema, bcrypt, Request, campaign_schema
+from models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
+from utils import DEFAULT_CAMPAIGN_IMAGE, API_KEY, API_SECRET, CLOUD_NAME
 
 campaignsAPI = Blueprint("campaignsAPI", __name__)
 
