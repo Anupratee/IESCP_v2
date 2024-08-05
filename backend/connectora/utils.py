@@ -68,3 +68,5 @@ def create_categories():
 
 
 
+import warnings
+warnings.filterwarnings('ignore', category=UserWarning, module='numpy')

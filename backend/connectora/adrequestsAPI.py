@@ -3,9 +3,18 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from connectora.models import db, User, users_schema, Influencer, influencers_schema, bcrypt, Request, influencer_ads_association
 from connectora.models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
 from connectora.utils import DEFAULT_INFLUENCER_IMAGE, DEFAULT_SPONSOR_IMAGE
+import connectora.task as task
 
 
 adrequestsAPI = Blueprint("adrequestsAPI", __name__)
+
+
+#TEST
+@adrequestsAPI.route("/meow")
+def meow():
+    task.add.delay()
+    return "hello"
+
 
 
 @adrequestsAPI.route("/influencer_ad_requests", methods=["GET"])

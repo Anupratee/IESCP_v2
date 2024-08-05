@@ -33,21 +33,32 @@ def get_total_stats():
 
 @statsAPI.route('/pie_chart/sponsors_influencers')
 def chart_sponsors_influencers():
-    sponsor_count = Sponsor.query.count()
-    influencer_count = Influencer.query.count()
+    try:
+        sponsor_count = Sponsor.query.count()
+        influencer_count = Influencer.query.count()
 
-    labels = ['Sponsors', 'Influencers']
-    sizes = [sponsor_count, influencer_count]
-    colors = ['#ff9999','#66b3ff']
+        # Handle the case where there are no sponsors or influencers
+        if sponsor_count == 0 and influencer_count == 0:
+            return jsonify({"message": "No data available to generate chart."}), 204
 
-    plt.figure(figsize=(6, 6))
-    plt.pie(sizes, labels=labels, colors=colors, autopct=lambda p: '{:.1f}%'.format(p), 
-            startangle=140, textprops={'fontsize': 14})
-    plt.axis('equal')  
+        labels = ['Sponsors', 'Influencers']
+        sizes = [sponsor_count, influencer_count]
+        colors = ['#ff9999', '#66b3ff']
 
-    img = io.BytesIO()
-    plt.savefig(img, format='png')
-    img.seek(0)
-    plt.close()
+        # Create pie chart
+        plt.figure(figsize=(6, 6))
+        plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%',
+                startangle=140, textprops={'fontsize': 14})
+        plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle
 
-    return send_file(img, mimetype='image/png')
+        # Save pie chart to a BytesIO object
+        img = io.BytesIO()
+        plt.savefig(img, format='png')
+        img.seek(0)
+        plt.close()
+
+        # Return image as response
+        return send_file(img, mimetype='image/png')
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

@@ -5,6 +5,15 @@ import os
 from os import path
 from connectora.models import DB_NAME, db, ma, bcrypt
 from connectora.utils import API_KEY, API_SECRET, CLOUD_NAME, create_admin, create_categories
+from connectora.workers import celery, ContextTask
+import connectora.task
+
+celery = celery   
+celery.conf.update(
+    BROKER_URL = 'redis://localhost:6379/1',
+    RESULT_BACKEND = 'redis://localhost:6379/2'
+    )
+celery.Task = ContextTask
 
 def create_app():
     app = Flask(__name__)
@@ -30,7 +39,8 @@ def create_app():
     CORS(app, supports_credentials = True)
 
     with app.app_context():
-        if not path.exists('backend/instance/' + DB_NAME):
+        instance_path = path.join(app.instance_path, DB_NAME)
+        if not path.exists(instance_path):
             db.create_all()
             print('created database')
             try:
