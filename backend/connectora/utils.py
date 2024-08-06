@@ -8,7 +8,7 @@ DEFAULT_CAMPAIGN_IMAGE = "https://asset.cloudinary.com/daxlzqjke/4cc07a109b2b1ac
 ADMIN_IMAGE = "https://asset.cloudinary.com/daxlzqjke/d42e0c19cc6bd13e7613da16521303df"
 
 def create_admin():
-    from connectora.models import db, User
+    from models import db, User
     email = "admin@connectora.com"
     password = "admin"
     name = "Admin"
@@ -27,13 +27,10 @@ def create_admin():
                  location = location,
                  flag = flag)
     
-    try:
-        db.session.add(admin)
-        db.session.commit()
-        print("admin added")
-    except Exception as e:
-        db.session.rollback()
-        print("error:", e)
+    db.session.add(admin)
+    db.session.commit()
+    print("admin added")
+
 
 def create_categories():
     from models import db, Category
@@ -58,13 +55,10 @@ def create_categories():
         Category(name = "Social Issues")
     ]
 
-    try:
-        db.session.add_all(new_categories)
-        db.session.commit()
-        print("categories added")
-    except Exception as e:
-        db.session.rollback()
-        print("error:", e)
+    db.session.add_all(new_categories)
+    db.session.commit()
+    print("categories added")
+    
 
 
 

@@ -3,6 +3,7 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import os
 from os import path
+import logging
 from flask_mail import Mail
 from flask_caching import Cache
 from models import DB_NAME, db, ma, bcrypt
@@ -56,7 +57,8 @@ with app.app_context():
             create_admin()
             create_categories()
         except Exception as e:
-            pass
+            logging.error(f'Error during setup: {e}')
+            db.session.rollback()
 
 app.app_context().push()
 

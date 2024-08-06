@@ -2,5 +2,5 @@ venv/
 wslvenv/
 frontend/node_modules
 backend/connectora/static/
-backend/instance/
+backend/connectora/instance/
 backend/connectora/__pycache__/

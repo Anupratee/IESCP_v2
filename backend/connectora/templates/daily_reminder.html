@@ -1,10 +1,16 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>meow</title>
-    </head>
-    <body>
-        meow
-    </body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Daily Reminder{% endblock %}
+
+{% block header %}Daily Reminder{% endblock %}
+
+{% block content %}
+<div class="alert alert-info" role="alert">
+    Hi {{ user.name }},
+</div>
+<p>We wanted to remind you that you have pending requests that need your attention. Please review the requests and take the necessary actions.</p>
+<p>You can access your pending requests by clicking the button below:</p>
+<a href="http://127.0.0.1:5000/login" class="btn btn-custom">View Requests</a>
+{% endblock %}
+
 

@@ -1,21 +1,11 @@
 BACKEND
-wsl
-source wslvenv/bin/activate
-cd backend
-cd connectora 
-python3 app.py
+wsl -e bash -c "source wslvenv/bin/activate && cd backend/connectora && python3 app.py"
 
 REDIS
-wsl
-source wslvenv/bin/activate
-redis-server
+wsl -e bash -c "source wslvenv/bin/activate && redis-server"
 
 CELERY
-wsl
-source wslvenv/bin/activate
-cd backend
-cd connectora
-celery -A app.celery worker --loglevel=INFO
+wsl -e bash -c "source wslvenv/bin/activate && cd backend/connectora && celery -A app.celery worker --loglevel=INFO"
 
 CELERY BEAT
 wsl
@@ -23,12 +13,15 @@ source wslvenv/bin/activate
 cd backend
 cd connectora
 celery -A app.celery beat --max-interval 1 -l info
+wsl -e bash -c "source wslvenv/bin/activate && cd backend/connectora && celery -A app.celery beat --max-interval 1 -l info"
+
 
 MAILHOG
 wsl
- ~/go/bin/MailHog
+~/go/bin/MailHog
+wsl -e bash -c "~/go/bin/MailHog"
+
 
 FRONTEND
-venv\Scripts\activate
-cd frontend
-npm run serve
+venv\Scripts\Activate; cd frontend; npm run serve
+
