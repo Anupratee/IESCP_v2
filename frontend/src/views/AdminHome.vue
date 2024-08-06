@@ -1,4 +1,5 @@
 <template>
+  <NavBar />
   <div>
     <h2>Admin Home</h2>
     <br />
@@ -79,7 +80,11 @@
 </template>
 
 <script>
+import NavBar from "@/components/NavBar.vue";
 export default {
+  components: {
+    NavBar,
+  },
   data() {
     return {
       campaigns: [],

@@ -8,17 +8,10 @@ CELERY
 wsl -e bash -c "source wslvenv/bin/activate && cd backend/connectora && celery -A app.celery worker --loglevel=INFO"
 
 CELERY BEAT
-wsl
-source wslvenv/bin/activate
-cd backend
-cd connectora
-celery -A app.celery beat --max-interval 1 -l info
 wsl -e bash -c "source wslvenv/bin/activate && cd backend/connectora && celery -A app.celery beat --max-interval 1 -l info"
 
 
 MAILHOG
-wsl
-~/go/bin/MailHog
 wsl -e bash -c "~/go/bin/MailHog"
 
 

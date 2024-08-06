@@ -4,7 +4,7 @@
     <form @submit.prevent="signup">
       <label for="email" class="form-label">Email</label>
       <input
-        type="text"
+        type="email"
         id="email"
         class="form-control"
         v-model="email"

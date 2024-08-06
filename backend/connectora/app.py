@@ -7,7 +7,7 @@ import logging
 from flask_mail import Mail
 from flask_caching import Cache
 from models import DB_NAME, db, ma, bcrypt
-from utils import API_KEY, API_SECRET, CLOUD_NAME, create_admin, create_categories, cache
+from utils import API_KEY, API_SECRET, CLOUD_NAME, create_admin, create_categories
 from workers import celery, ContextTask
 import task
 
@@ -28,8 +28,8 @@ app.config['JWT_SECRET_KEY'] = 'audiowavemad2'
 app.config['CLOUDINARY_URL'] = f"cloudinary://{API_KEY}:{API_SECRET}@{CLOUD_NAME}"
 app.config['MAIL_SERVER'] = 'localhost'
 app.config['MAIL_PORT'] = 1025
-app.config["CACHE_TYPE"] = "redis"
-app.config["CACHE_REDIS_URL"] = 'redis://localhost:6379/3'
+# app.config["CACHE_TYPE"] = "redis"
+# app.config["CACHE_REDIS_URL"] = 'redis://localhost:6379/3'
 
 app.static_folder = 'static'
 UPLOAD_FOLDER = app.static_folder
@@ -42,7 +42,7 @@ jwt = JWTManager(app)
 
 db.init_app(app)
 ma.init_app(app)
-cache.init_app(app)
+# cache.init_app(app)
 bcrypt.init_app(app)
 mail = Mail(app)
 
