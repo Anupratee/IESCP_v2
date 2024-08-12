@@ -1,4 +1,5 @@
 <template>
+  <NavBar />
   <h2>Register Influencer</h2>
   <div class="container">
     <form @submit.prevent="signup">
@@ -72,7 +73,7 @@
         required
       />
       <br />
-      <button type="submit" class="btn btn-primary">Register</button>
+      <button type="submit" class="btn btn-outline-dark">Register</button>
     </form>
   </div>
   <br />
@@ -86,7 +87,11 @@
 </template>
 
 <script>
+import NavBar from "@/components/NavBar.vue";
 export default {
+  components: {
+    NavBar,
+  },
   data() {
     return {
       name: "",

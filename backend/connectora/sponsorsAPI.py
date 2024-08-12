@@ -1,10 +1,13 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_file, Response
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
+from io import StringIO
+import csv
 from models import db, User, user_schema, Influencer, influencers_schema, bcrypt, sponsor_schema
 from models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
 from utils import DEFAULT_INFLUENCER_IMAGE, DEFAULT_SPONSOR_IMAGE, API_KEY, API_SECRET, CLOUD_NAME
+from task import generate_csv
 
 sponsorsAPI = Blueprint("sponsorsAPI", __name__)
 
@@ -189,4 +192,11 @@ def delete_sponsor(user_id):
         return jsonify({'error':f'{str(e)}.'}), 409
 
 
+@sponsorsAPI.route('/download_campaigns_csv', methods=['GET'])
+def download_campaigns_csv():   
+    csv_data = generate_csv()
     
+    if csv_data is None:
+        return jsonify({"error": "No campaigns found for the user"}), 404
+
+    return Response(csv_data, mimetype='text/csv', headers={'Content-Disposition': 'attachmentl;filename=campaigns.csv'})

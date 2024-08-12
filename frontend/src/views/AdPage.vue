@@ -1,4 +1,5 @@
 <template>
+  <NavBar />
   <div>
     <h2>
       <b>{{ name }}</b>
@@ -68,7 +69,11 @@
 </template>
 
 <script>
+import NavBar from "@/components/NavBar.vue";
 export default {
+  components: {
+    NavBar,
+  },
   data() {
     return {
       ad_id: null,

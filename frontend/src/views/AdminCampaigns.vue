@@ -1,4 +1,5 @@
 <template>
+  <NavBar />
   <div v-if="hasCampaigns"><h2>All Campaigns</h2></div>
   <br />
   <div class="container">
@@ -25,8 +26,8 @@
               <b>By:</b> {{ campaign.sponsor_name }} <br />
             </p>
             <router-link
-              :to="`/influencer-home/campaigns/${campaign.id}`"
-              class="btn btn-primary"
+              :to="`/admin-home/campaigns/${campaign.id}`"
+              class="btn btn-outline-dark"
               >View</router-link
             >
           </div>
@@ -37,7 +38,11 @@
 </template>
 
 <script>
+import NavBar from "@/components/NavBar.vue";
 export default {
+  components: {
+    NavBar,
+  },
   data() {
     return {
       campaigns: [],

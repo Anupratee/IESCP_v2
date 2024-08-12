@@ -1,4 +1,5 @@
 <template>
+  <NavBar />
   <div>
     <h2><b>Influencer Home</b></h2>
   </div>
@@ -32,7 +33,7 @@
             </p>
             <router-link
               :to="`/influencer-home/campaigns/${campaign.id}`"
-              class="btn btn-primary"
+              class="btn btn-outline-dark"
               >View</router-link
             >
           </div>
@@ -67,7 +68,7 @@
           <td>{{ ad.sponsor_name }}</td>
           <td>
             <button
-              class="btn btn-primary"
+              class="btn btn-outline-dark"
               data-bs-toggle="modal"
               data-bs-target="#requestAdModal"
               @click="
@@ -119,14 +120,14 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-outline-dark"
             data-bs-dismiss="modal"
           >
             Cancel
           </button>
           <button
             @click="requestAd(selected_ad_id, payment_amount)"
-            class="btn btn-success"
+            class="btn btn-outline-dark"
           >
             Send
           </button>
@@ -162,7 +163,7 @@
           <td>
             <div v-if="request.from_who === 'sponsor'">
               <button
-                class="btn btn-success me-2"
+                class="btn btn-outline-dark me-2"
                 data-bs-toggle="modal"
                 data-bs-target="#acceptAdModal"
                 @click="
@@ -174,7 +175,7 @@
                 Accept
               </button>
               <button
-                class="btn btn-primary me-2"
+                class="btn btn-outline-dark me-2"
                 data-bs-toggle="modal"
                 data-bs-target="#negotiateAdModal"
                 @click="
@@ -186,7 +187,7 @@
                 Negotiate
               </button>
               <button
-                class="btn btn-danger"
+                class="btn btn-outline-dark"
                 data-bs-toggle="modal"
                 data-bs-target="#declineAdModal"
                 @click="
@@ -200,7 +201,7 @@
             </div>
             <div v-else-if="request.from_who === 'influencer'">
               <button
-                class="btn btn-warning me-2"
+                class="btn btn-outline-dark me-2"
                 data-bs-toggle="modal"
                 data-bs-target="#editAdModal"
                 @click="
@@ -212,7 +213,7 @@
                 Edit
               </button>
               <button
-                class="btn btn-danger"
+                class="btn btn-outline-dark"
                 data-bs-toggle="modal"
                 data-bs-target="#retractAdModal"
                 @click="
@@ -256,12 +257,16 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-outline-dark"
             data-bs-dismiss="modal"
           >
             Close
           </button>
-          <button type="button" class="btn btn-success" @click="acceptRequest">
+          <button
+            type="button"
+            class="btn btn-outline-dark"
+            @click="acceptRequest"
+          >
             Accept
           </button>
         </div>
@@ -304,12 +309,16 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-outline-dark"
             data-bs-dismiss="modal"
           >
             Close
           </button>
-          <button type="button" class="btn btn-primary" @click="updateRequest">
+          <button
+            type="button"
+            class="btn btn-outline-dark"
+            @click="updateRequest"
+          >
             Negotiate
           </button>
         </div>
@@ -342,12 +351,16 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-outline-dark"
             data-bs-dismiss="modal"
           >
             Close
           </button>
-          <button type="button" class="btn btn-danger" @click="rejectRequest">
+          <button
+            type="button"
+            class="btn btn-outline-dark"
+            @click="rejectRequest"
+          >
             Decline
           </button>
         </div>
@@ -390,12 +403,16 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-outline-dark"
             data-bs-dismiss="modal"
           >
             Close
           </button>
-          <button type="button" class="btn btn-warning" @click="updateRequest">
+          <button
+            type="button"
+            class="btn btn-outline-dark"
+            @click="updateRequest"
+          >
             Save Changes
           </button>
         </div>
@@ -429,12 +446,16 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-outline-dark"
             data-bs-dismiss="modal"
           >
             Close
           </button>
-          <button type="button" class="btn btn-danger" @click="rejectRequest">
+          <button
+            type="button"
+            class="btn btn-outline-dark"
+            @click="rejectRequest"
+          >
             Retract
           </button>
         </div>
@@ -445,7 +466,11 @@
 </template>
 
 <script>
+import NavBar from "@/components/NavBar.vue";
 export default {
+  components: {
+    NavBar,
+  },
   data() {
     return {
       campaigns: [],

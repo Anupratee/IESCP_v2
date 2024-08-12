@@ -1,4 +1,5 @@
 <template>
+  <NavBar />
   <div>
     <h3>My Ads</h3>
     <br />
@@ -31,7 +32,11 @@
 </template>
 
 <script>
+import NavBar from "@/components/NavBar.vue";
 export default {
+  components: {
+    NavBar,
+  },
   data() {
     return {
       ads: [],

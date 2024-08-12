@@ -1,4 +1,5 @@
 <template>
+  <NavBar />
   <div>
     <h2>
       <b>{{ name }}</b>
@@ -32,11 +33,11 @@
           <td>
             <router-link
               :to="`/sponsor-home/ads/${ad.id}`"
-              class="btn btn-primary"
+              class="btn btn-outline-dark me-2"
               >View</router-link
             >
             <button
-              class="btn btn-danger"
+              class="btn btn-outline-dark"
               data-bs-toggle="modal"
               data-bs-target="#confirmDeleteAd"
               @click="
@@ -72,12 +73,15 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-outline-dark"
             data-bs-dismiss="modal"
           >
             Cancel
           </button>
-          <button @click="deleteAd(selected_ad_id)" class="btn btn-danger">
+          <button
+            @click="deleteAd(selected_ad_id)"
+            class="btn btn-outline-dark"
+          >
             Delete
           </button>
         </div>
@@ -109,7 +113,9 @@
         v-model="ad_description"
       ></textarea>
       <br />
-      <button type="submit" class="btn btn-primary">Add Advertisement</button>
+      <button type="submit" class="btn btn-outline-dark">
+        Add Advertisement
+      </button>
     </form>
   </div>
   <br />
@@ -195,7 +201,9 @@
         ref="file"
       />
       <br />
-      <button type="submit" class="btn btn-primary">Update Campaign</button>
+      <button type="submit" class="btn btn-outline-dark">
+        Update Campaign
+      </button>
       <br />
     </form>
   </div>
@@ -203,7 +211,11 @@
 </template>
 
 <script>
+import NavBar from "@/components/NavBar.vue";
 export default {
+  components: {
+    NavBar,
+  },
   data() {
     return {
       campaign_id: null,

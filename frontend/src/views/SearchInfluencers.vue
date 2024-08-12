@@ -1,4 +1,5 @@
 <template>
+  <NavBar />
   <div class="container">
     <input
       class="form-control"
@@ -21,7 +22,9 @@
       </select>
     </div>
     <br />
-    <button @click="searchInfluencers" class="btn btn-primary">Search</button>
+    <button @click="searchInfluencers" class="btn btn-outline-dark">
+      Search
+    </button>
     <br />
     <br />
     <div v-if="loading">Loading...</div>
@@ -62,7 +65,7 @@
                   <b>Location:</b> {{ influencer.location }} <br />
                 </p>
                 <button
-                  class="btn btn-primary"
+                  class="btn btn-outline-dark"
                   data-bs-toggle="modal"
                   data-bs-target="#requestAdModal"
                   @click="
@@ -127,20 +130,27 @@
           <div class="modal-footer">
             <button
               type="button"
-              class="btn btn-secondary"
+              class="btn btn-outline-dark"
               data-bs-dismiss="modal"
             >
               Cancel
             </button>
-            <button @click="requestAd" class="btn btn-success">Send</button>
+            <button @click="requestAd" class="btn btn-outline-dark">
+              Send
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 <script>
+import NavBar from "@/components/NavBar.vue";
 export default {
+  components: {
+    NavBar,
+  },
   data() {
     return {
       searchTerm: "",

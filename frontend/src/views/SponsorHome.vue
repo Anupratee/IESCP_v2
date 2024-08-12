@@ -1,6 +1,16 @@
 <template>
+  <NavBar />
+  <h2><b>Sponsor Home</b></h2>
+  <br />
   <div>
-    <h2><b>Sponsor Home</b></h2>
+    <div>
+      <a
+        href="http://localhost:5000/download_campaigns_csv"
+        class="btn btn-outline-dark"
+      >
+        Download Campaigns CSV
+      </a>
+    </div>
   </div>
   <br />
   <div v-if="hasCampaigns"><h3>Your Campaigns</h3></div>
@@ -28,23 +38,24 @@
               <b>Description:</b> {{ campaign.description }} <br />
               <b>By:</b> {{ campaign.sponsor_name }} <br />
             </p>
-            <router-link
-              :to="`/sponsor-home/campaigns/${campaign.id}`"
-              class="btn btn-primary"
-              >View</router-link
-            >
-            <br />
-            <button
-              class="btn btn-danger"
-              data-bs-toggle="modal"
-              data-bs-target="#confirmDeleteCampaign"
-              @click="
-                selected_campaign_id = campaign.id;
-                selected_campaign_name = campaign.name;
-              "
-            >
-              Delete
-            </button>
+            <div mt-auto d-flex justify-content-between>
+              <router-link
+                :to="`/sponsor-home/campaigns/${campaign.id}`"
+                class="btn btn-outline-dark me-2"
+                >View</router-link
+              >
+              <button
+                class="btn btn-outline-dark"
+                data-bs-toggle="modal"
+                data-bs-target="#confirmDeleteCampaign"
+                @click="
+                  selected_campaign_id = campaign.id;
+                  selected_campaign_name = campaign.name;
+                "
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -71,14 +82,14 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-outline-dark"
             data-bs-dismiss="modal"
           >
             Cancel
           </button>
           <button
             @click="deleteCampaign(selected_campaign_id)"
-            class="btn btn-danger"
+            class="btn btn-outline-dark"
           >
             Delete
           </button>
@@ -145,7 +156,7 @@
         ref="file"
       />
       <br />
-      <button type="submit" class="btn btn-primary">Add Campaign</button>
+      <button type="submit" class="btn btn-outline-dark">Add Campaign</button>
       <br />
     </form>
   </div>
@@ -153,7 +164,11 @@
 </template>
 
 <script>
+import NavBar from "@/components/NavBar.vue";
 export default {
+  components: {
+    NavBar,
+  },
   data() {
     return {
       campaigns: [],

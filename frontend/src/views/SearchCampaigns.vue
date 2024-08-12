@@ -1,4 +1,5 @@
 <template>
+  <NavBar />
   <div class="container">
     <input
       class="form-control"
@@ -21,7 +22,9 @@
       </select>
     </div>
     <br />
-    <button @click="searchCampaigns" class="btn btn-primary">Search</button>
+    <button @click="searchCampaigns" class="btn btn-outline-dark">
+      Search
+    </button>
     <br />
     <br />
 
@@ -63,7 +66,7 @@
                 </p>
                 <router-link
                   :to="`/influencer-home/campaigns/${campaign.id}`"
-                  class="btn btn-primary"
+                  class="btn btn-outline-dark"
                   >View</router-link
                 >
               </div>
@@ -76,7 +79,11 @@
 </template>
 
 <script>
+import NavBar from "@/components/NavBar.vue";
 export default {
+  components: {
+    NavBar,
+  },
   data() {
     return {
       searchTerm: "",

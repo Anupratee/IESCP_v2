@@ -1,4 +1,5 @@
 <template>
+  <NavBar />
   <div class="container">
     <h2>Login</h2>
     <br />
@@ -21,7 +22,7 @@
         required
       />
       <br />
-      <button type="submit" class="btn btn-primary">Login</button>
+      <button type="submit" class="btn btn-outline-dark">Login</button>
     </form>
     <br />
     <p>
@@ -32,7 +33,11 @@
 </template>
 
 <script>
+import NavBar from "@/components/NavBar.vue";
 export default {
+  components: {
+    NavBar,
+  },
   data() {
     return {
       email: "",

@@ -1,4 +1,5 @@
 <template>
+  <NavBar />
   <div>
     <h2>
       <b>{{ campaign_name }}</b>
@@ -35,7 +36,7 @@
           <td>{{ ad.sponsor_name }}</td>
           <td>
             <button
-              class="btn btn-primary"
+              class="btn btn-outline-dark"
               data-bs-toggle="modal"
               data-bs-target="#requestAdModal"
               @click="
@@ -87,14 +88,14 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-outline-dark"
             data-bs-dismiss="modal"
           >
             Cancel
           </button>
           <button
             @click="requestAd(selected_ad_id, payment_amount)"
-            class="btn btn-success"
+            class="btn btn-outline-dark"
           >
             Send
           </button>
@@ -105,7 +106,11 @@
 </template>
 
 <script>
+import NavBar from "@/components/NavBar.vue";
 export default {
+  components: {
+    NavBar,
+  },
   data() {
     return {
       ads: [],

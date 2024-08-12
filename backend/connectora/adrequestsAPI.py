@@ -4,7 +4,7 @@ from models import db, User, users_schema, Influencer, influencers_schema, bcryp
 from models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
 from utils import DEFAULT_INFLUENCER_IMAGE, DEFAULT_SPONSOR_IMAGE
 import task as task
-from task import generate_csv, test
+from task import generate_csv
 
 
 adrequestsAPI = Blueprint("adrequestsAPI", __name__)
@@ -14,8 +14,7 @@ adrequestsAPI = Blueprint("adrequestsAPI", __name__)
 @adrequestsAPI.route("/meow")
 def meow():
     # csv_data = generate_csv()
-    # return Response(csv_data, mimetype="text/csv", headers={"Content-Disposition":"attachment;filename=meow.csv"})
-    test.delay()
+    # return Response(csv_data, mimetype="text/csv", headers={"Content-Disposition":"attachment;filename=meow.csv"}
     return "helo"
 
 

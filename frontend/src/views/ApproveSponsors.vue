@@ -1,4 +1,5 @@
 <template>
+  <NavBar />
   <h2>Approve Sponsors</h2>
   <div v-if="!hasSponsors"><h2>No Sponsors needing approval</h2></div>
   <div v-if="hasSponsors"><h2>Sponsors needing approval</h2></div>
@@ -22,7 +23,7 @@
               <b>Flag:</b> {{ sponsor.flag }}
             </p>
             <button
-              class="btn btn-primary"
+              class="btn btn-outline-dark"
               data-bs-toggle="modal"
               data-bs-target="#confirmApproveSponsor"
               @click="
@@ -33,7 +34,7 @@
               Approve
             </button>
             <button
-              class="btn btn-danger"
+              class="btn btn-outline-dark"
               data-bs-toggle="modal"
               data-bs-target="#confirmRejectSponsor"
               @click="
@@ -66,14 +67,14 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-outline-dark"
             data-bs-dismiss="modal"
           >
             Cancel
           </button>
           <button
             @click="approveSponsor(selected_sponsor_id)"
-            class="btn btn-success"
+            class="btn btn-outline-dark"
           >
             Approve
           </button>
@@ -99,14 +100,14 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-outline-dark"
             data-bs-dismiss="modal"
           >
             Cancel
           </button>
           <button
             @click="rejectSponsor(selected_sponsor_id)"
-            class="btn btn-danger"
+            class="btn btn-outline-dark"
           >
             Reject
           </button>
@@ -117,7 +118,11 @@
 </template>
 
 <script>
+import NavBar from "@/components/NavBar.vue";
 export default {
+  components: {
+    NavBar,
+  },
   data() {
     return {
       sponsors: [],

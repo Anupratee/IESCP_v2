@@ -1,4 +1,5 @@
 <template>
+  <NavBar />
   <div class="profile-container">
     <div class="profile-header">
       <img v-if="image" :src="image" alt="Profile Image" />
@@ -132,14 +133,18 @@
       />
       <br />
       <br />
-      <button type="submit" class="btn btn-primary">Update Profile</button>
+      <button type="submit" class="btn btn-outline-dark">Update Profile</button>
     </form>
   </div>
   <br />
 </template>
 
 <script>
+import NavBar from "@/components/NavBar.vue";
 export default {
+  components: {
+    NavBar,
+  },
   data() {
     return {
       user_id: null,

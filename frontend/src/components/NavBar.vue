@@ -24,8 +24,13 @@
         |
         <router-link to="/influencer-home/my-ads">My ads</router-link> |
         <router-link to="/influencer-home/search">Search</router-link> |
-        <router-link to="/login" @click="logout">Logout</router-link> |
+        <router-link to="/login" @click="logout">Logout</router-link>
       </div>
+    </div>
+    <div v-if="!isLoggedIn">
+      <router-link to="/">Login</router-link> |
+      <router-link to="/register-influencer">Register Influencer</router-link> |
+      <router-link to="/register-sponsor">Register Sponsor</router-link>
     </div>
   </nav>
 </template>
