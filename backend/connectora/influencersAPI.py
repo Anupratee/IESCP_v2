@@ -1,9 +1,8 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
+from flask_jwt_extended import jwt_required, get_jwt_identity
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
-from models import db, User, user_schema, users_schema, Influencer, influencer_schema, influencers_schema, bcrypt
-from models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
+from models import db, User, user_schema, Influencer, influencers_schema, Category
 from utils import DEFAULT_INFLUENCER_IMAGE, API_KEY, API_SECRET, CLOUD_NAME
 
 influencersAPI = Blueprint("/influencersAPI", __name__)

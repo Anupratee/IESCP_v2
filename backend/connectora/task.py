@@ -47,14 +47,13 @@ def monthly_report():
 
     for user in users:
         campaigns = Campaign.query.filter_by(sponsor_id=user.id).all()
-
         requests = Request.query.filter_by(sponsor_id=user.id).all()
-
-        html_content = render_template(
-            "test.html"
-        )
-
-        send_email(user.email, subject, html_content)
+        ads = []
+        for campaign in campaigns:
+            ads.append(Ad.query.filter_by(campaign_id = campaign.id).all())
+        
+        html = render_template("monthly_report.html", campaigns = campaigns, requests = requests, ads = ads, user = user)
+        send_email(user.email, subject, html)
 
 
 def generate_csv():

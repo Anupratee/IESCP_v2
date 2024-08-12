@@ -1,12 +1,9 @@
-from flask import Blueprint, request, jsonify, send_file, Response
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
+from flask import Blueprint, request, jsonify, Response
+from flask_jwt_extended import jwt_required, get_jwt_identity
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
-from io import StringIO
-import csv
-from models import db, User, user_schema, Influencer, influencers_schema, bcrypt, sponsor_schema
-from models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
-from utils import DEFAULT_INFLUENCER_IMAGE, DEFAULT_SPONSOR_IMAGE, API_KEY, API_SECRET, CLOUD_NAME
+from models import db, User, user_schema, sponsor_schema, Sponsor, sponsors_schema
+from utils import DEFAULT_SPONSOR_IMAGE, API_KEY, API_SECRET, CLOUD_NAME
 from task import generate_csv
 
 sponsorsAPI = Blueprint("sponsorsAPI", __name__)

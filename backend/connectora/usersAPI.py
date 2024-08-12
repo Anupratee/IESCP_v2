@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
-from models import db, User, user_schema, users_schema, Influencer, influencers_schema, bcrypt
-from models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from models import User, user_schema, users_schema
 
 usersAPI = Blueprint("usersAPI", __name__)
 

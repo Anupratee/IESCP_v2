@@ -1,21 +1,16 @@
-from flask import Blueprint, request, jsonify, Response
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
-from models import db, User, users_schema, Influencer, influencers_schema, bcrypt, Request, influencer_ads_association
-from models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
-from utils import DEFAULT_INFLUENCER_IMAGE, DEFAULT_SPONSOR_IMAGE
+from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from models import db, User, Influencer, Request, influencer_ads_association
+from models import Sponsor, Campaign, Ad
 import task as task
-from task import generate_csv
+from task import monthly_report
 
 
 adrequestsAPI = Blueprint("adrequestsAPI", __name__)
 
-
-#TEST
-@adrequestsAPI.route("/meow")
-def meow():
-    # csv_data = generate_csv()
-    # return Response(csv_data, mimetype="text/csv", headers={"Content-Disposition":"attachment;filename=meow.csv"}
-    return "helo"
+@adrequestsAPI.route("/test", methods=["GET"])
+def test():
+    monthly_report.delay()
 
 
 @adrequestsAPI.route("/influencer_ad_requests", methods=["GET"])

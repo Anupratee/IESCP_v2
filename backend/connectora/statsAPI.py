@@ -1,13 +1,9 @@
-from flask import Blueprint, request, jsonify, send_file, Response
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
-from models import db, User, user_schema, users_schema, Influencer, influencers_schema, bcrypt, Request
-from models import Sponsor, sponsors_schema, Campaign, campaigns_schema, Ad, ads_schema, Category, categories_schema
-import seaborn as sns
+from flask import Blueprint, jsonify, send_file
+from models import db, User, Influencer, Request, Sponsor, Campaign, Ad
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import io
-import pandas as pd
 
 statsAPI = Blueprint("statsAPI", __name__)
 

@@ -9,7 +9,6 @@ from flask_caching import Cache
 from models import DB_NAME, db, ma, bcrypt
 from utils import API_KEY, API_SECRET, CLOUD_NAME, create_admin, create_categories
 from workers import celery, ContextTask
-import task
 
 celery = celery   
 celery.conf.update(

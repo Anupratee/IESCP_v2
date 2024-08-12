@@ -6,8 +6,16 @@
     <title>Monthly Activity Report</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .container {
-            margin-top: 30px;
+        body {
+            background-color: #f8f9fa;
+        }
+        .email-container {
+            margin: 30px auto;
+            padding: 20px;
+            max-width: 600px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .header {
             background-color: #007bff;
@@ -18,8 +26,13 @@
         }
         .content {
             padding: 20px;
-            border: 1px solid #dee2e6;
-            border-radius: 0 0 8px 8px;
+        }
+        .content h2 {
+            color: #333333;
+            margin-bottom: 20px;
+        }
+        .content .table {
+            margin-bottom: 40px;
         }
         .footer {
             text-align: center;
@@ -31,38 +44,77 @@
 <body>
 
 <div class="container">
-    <div class="header">
-        <h1>Monthly Activity Report</h1>
-    </div>
-    <div class="content">
-        <h2>Hello, {{ user.name }}</h2>
-        <p>Here is your activity report for the month:</p>
-        
-        <h3>Campaigns</h3>
-        <ul class="list-group">
-            {% for campaign in campaigns %}
-            <li class="list-group-item">
-                <strong>Campaign Name:</strong> {{ campaign.name }}<br>
-                <strong>Description:</strong> {{ campaign.description }}<br>
-                <strong>Status:</strong> {% if campaign.status %}Completed{% else %}Incomplete{% endif %}
-            </li>
-            {% endfor %}
-        </ul>
+    <div class="email-container">
+        <div class="header">
+            <h1>Monthly Activity Report</h1>
+        </div>
+        <div class="content">
+            <h2>Hello, {{ user.name }}</h2>
+            <p>Here is the summary of your activities for this month:</p>
 
-        <h3>Requests</h3>
-        <ul class="list-group">
-            {% for request in requests %}
-            <li class="list-group-item">
-                <strong>From:</strong> {{ request.from_who }}<br>
-                <strong>Payment Amount:</strong> ${{ request.payment_amount }}<br>
-                <strong>Ad Name:</strong> {{ request.ad.name }}<br>
-                <strong>Influencer:</strong> {{ request. }}
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-    <div class="footer">
-        <p>Thank you for your continued partnership.</p>
+            <h3>Your Campaigns</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Campaign Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for campaign in campaigns %}
+                    <tr>
+                        <td>{{ campaign.name }}</td>
+                        <td>{{ campaign.description }}</td>
+                        <td>{{ 'Completed' if campaign.status else 'Incomplete' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h3>Your Ads</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Ad Name</th>
+                        <th>Description</th>
+                        <th>Budget</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ad in ads %}
+                    <tr>
+                        <td>{{ ad.name }}</td>
+                        <td>{{ ad.description }}</td>
+                        <td>{{ ad.budget }}</td>
+                        <td>{{ 'Active' if ad.status else 'Inactive' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h3>Your Requests</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Request ID</th>
+                        <th>Payment Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in requests %}
+                    <tr>
+                        <td>{{ request.id }}</td>
+                        <td>{{ request.payment_amount }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="footer">
+            <p>Thank you for your continued support. We look forward to your future campaigns.</p>
+        </div>
     </div>
 </div>
 
