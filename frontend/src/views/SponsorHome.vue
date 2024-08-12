@@ -141,7 +141,7 @@
         id="description"
         class="form-control"
         rows="6"
-        v-model="update_description"
+        v-model="description"
         requried
       ></textarea>
       <br />
