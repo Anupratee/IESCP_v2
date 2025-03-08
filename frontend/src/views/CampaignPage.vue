@@ -4,7 +4,9 @@
     <h2>
       <b>{{ name }}</b>
     </h2>
-    <h5><b>Description: </b>{{ description }}</h5>
+    <div class="container">
+      <h5><b>Description: </b>{{ description }}</h5>
+    </div>
     <h5><b>Category: </b>{{ category_name }}</h5>
     <h5><b>Status: </b>{{ status }}</h5>
   </div>

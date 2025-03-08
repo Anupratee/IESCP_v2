@@ -136,7 +136,7 @@ export default {
   },
   methods: {
     fetchAds() {
-      fetch("http://localhost:5000/ads", {
+      fetch(`http://localhost:5000/get_ads_by_campaign/${this.campaign_id}`, {
         method: "GET",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("access_token"),
